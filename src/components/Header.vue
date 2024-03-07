@@ -3,21 +3,36 @@
     <div class="menu"></div>
 
     <div :class="isLogin ? 'user-avatar' : 'login'">
-      <div class="logined" v-if="true">
-        <el-image src="../assets/img/disc_bg.png" class="avatar">
+      <div class="logined" v-if="isLogin">
+        <el-image :src="userInfo.avatarUrl" class="avatar">
           <div slot="placeholder" class="image-slot">
             <i class="iconfont icon-placeholder"></i>
           </div>
         </el-image>
-        <span class="nickname">nickname </span>
+        <span class="nickname">{{ userInfo.nickname }}</span>
         <span class="set"><i class="iconfont icon-set"></i></span>
         <span class="quit"><i class="iconfont icon-quit"></i></span>
       </div>
-      <span class="login-btn" v-else>登录</span>
+      <span class="login-btn" @click="loginDialog" v-else>登录</span>
     </div>
   </header>
 </template>
-<script setup></script>
+<script setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+
+const store = useStore()
+
+// 是否显示登录弹窗
+const loginDialog = () => store.commit('SET_LOGINDIALOG', true)
+// 登录成功后，获取用户信息
+const isLogin = computed(() => {
+  return store.getters.isLogin
+})
+const userInfo = computed(() => {
+  return store.getters.userInfo
+})
+</script>
 
 <style lang="less" scoped>
 .header {
