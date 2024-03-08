@@ -13,4 +13,13 @@ const getUserInfo = ({ uid = '' }) => {
   return api.get(`/user/detail?uid=${uid}`, {})
 }
 
-export { login, logout, getUserInfo }
+// 热门搜索
+const serachHot = () => {
+  return api.get('/search/hot', {})
+}
+// 搜索联想
+const serachSuggest = ({ keywords = '' }) => {
+  return api.get(`/search/suggest?keywords=${keywords}`, {})
+}
+
+export { login, logout, getUserInfo, serachHot, serachSuggest }

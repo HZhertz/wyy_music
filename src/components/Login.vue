@@ -26,6 +26,7 @@ import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue'
 import { useStore } from 'vuex'
 
 const store = useStore()
+// getCurrentInstance()获取当前组件实例，解构 proxy 获取main.js中挂载的全局对象
 const { proxy } = getCurrentInstance()
 const isVisible = ref(true)
 

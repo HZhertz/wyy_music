@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <div class="menu"></div>
-
+    <Search></Search>
     <div :class="isLogin ? 'user-avatar' : 'login'">
       <div class="logined" v-if="isLogin">
         <el-image :src="userInfo.avatarUrl" class="avatar">
@@ -18,6 +18,7 @@
   </header>
 </template>
 <script setup>
+import Search from '@/components/Search.vue'
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 
@@ -40,7 +41,6 @@ const userInfo = computed(() => {
   justify-content: space-between;
   align-items: center;
   height: 80px;
-  background-color: #ba5252;
 }
 .menu {
   flex: 1;
