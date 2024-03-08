@@ -5,8 +5,21 @@
     <div class="hot-list">
       <div class="h_title">
         <h3>热门推荐</h3>
+        <span
+          v-for="(item, index) in playlist_tags"
+          :key="item.id"
+          :class="index == playlist_index ? 'active' : ''"
+          @click="choosePlayListType(index)"
+          >{{ item.name }}</span
+        >
       </div>
-      <div class="wrapper"></div>
+      <div class="wrapper">
+        <play-list
+          :playList="playlist_list"
+          :loading="playlist_loading"
+          :num="playlist_count"
+        ></play-list>
+      </div>
     </div>
 
     <div class="album_list">
@@ -42,8 +55,19 @@
 
 <script setup>
 import Banners from '@/views/index/Banner.vue'
+import PlayList from '@/components/PlayList.vue'
 
-import { toRefs } from 'vue'
+import useHotRecom from '@/composables/useHotRecom'
+
+// -------------- 推荐歌单
+const {
+  playlist_tags,
+  playlist_list,
+  playlist_index,
+  playlist_count,
+  playlist_loading,
+  choosePlayListType
+} = useHotRecom()
 </script>
 <style lang="less" scoped>
 .h_title {

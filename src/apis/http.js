@@ -26,4 +26,14 @@ const getBanner = () => {
   return api.get('/banner', {})
 }
 
-export { login, logout, getUserInfo, serachHot, serachSuggest, getBanner }
+/* ********* 歌单 ********* */
+// 热门歌单分类
+const hotList = () => {
+  return api.get('/playlist/hot', {})
+}
+// 歌单列表
+const playList = ({ order = 'hot', cat = '', limit = 50, offset = 0 }) => {
+  return api.get(`/top/playlist?limit=${limit}&order=${order}&cat=${cat}&offset=${offset}`, {})
+}
+
+export { login, logout, getUserInfo, serachHot, serachSuggest, getBanner, hotList, playList }
