@@ -21,5 +21,9 @@ const serachHot = () => {
 const serachSuggest = ({ keywords = '' }) => {
   return api.get(`/search/suggest?keywords=${keywords}`, {})
 }
+// 首页轮播图
+const getBanner = () => {
+  return api.get('/banner', {})
+}
 
-export { login, logout, getUserInfo, serachHot, serachSuggest }
+export { login, logout, getUserInfo, serachHot, serachSuggest, getBanner }

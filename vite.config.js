@@ -16,6 +16,16 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()]
     })
   ],
+  css: {
+    preprocessorOptions: {
+      less: {
+        modifyVars: {
+          hack: `true; @import (reference) "${resolve('src/assets/less/main.less')}";`
+        },
+        javascriptEnabled: true
+      }
+    }
+  },
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src')
