@@ -98,13 +98,13 @@ const getSearchHot = async () => {
 
 // el - select API 参数为当前输入值
 const remoteMethod = (query) => {
-  if (keyVal.value) {
+  if (query) {
+    // keyVal.value = query 写在分支外会导致获取焦点时将keyVal赋为空
+    keyVal.value = query
     loading.value = true
     suggestInfo.value = []
     getSerachSuggest()
-  } else if (query) {
-    // keyVal.value = query 写在分支外会导致获取焦点时将keyVal赋为空
-    keyVal.value = query
+  } else if (keyVal.value) {
     loading.value = true
     suggestInfo.value = []
     getSerachSuggest()
