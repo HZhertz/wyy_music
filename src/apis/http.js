@@ -61,6 +61,15 @@ const topAlbum = ({
   )
 }
 
+/* ********* MV ********* */
+// 获取 mv
+const mv = ({ area = '', type = '', order = '', limit = 50, offset = 0 }) => {
+  return api.get(
+    `/mv/all?area=${area}&type=${type}&order=${order}&limit=${limit}&offset=${offset}`,
+    {}
+  )
+}
+
 export {
   login,
   logout,
@@ -72,5 +81,6 @@ export {
   playList,
   topAlbum,
   toplist,
-  topRankList
+  topRankList,
+  mv
 }

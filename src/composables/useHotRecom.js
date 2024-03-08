@@ -1,6 +1,6 @@
 import { getCurrentInstance, reactive, toRefs, onMounted } from 'vue'
 
-export default function hot_recom() {
+export default () => {
   const { proxy } = getCurrentInstance()
 
   // -------------- 推荐歌单

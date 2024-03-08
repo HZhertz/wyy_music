@@ -39,13 +39,23 @@
     </div>
 
     <div class="top_list">
-      <RankList />
+      <RankList></RankList>
     </div>
+
     <div class="mv_list">
       <div class="h_title">
         <h3>最新MV</h3>
+        <span
+          v-for="(item, index) in mv_area"
+          :key="item.id"
+          :class="index == mv_index ? 'active' : ''"
+          @click="chooseMvType(index)"
+          >{{ item }}</span
+        >
       </div>
-      <div class="wrapper"></div>
+      <div class="wrapper">
+        <mv-list :mvList="mv_list" :loading="mv_loading" :num="mv_count"></mv-list>
+      </div>
     </div>
 
     <div class="dj-artist">
@@ -68,9 +78,11 @@ import Banners from '@/views/index/Banner.vue'
 import PlayList from '@/components/PlayList.vue'
 import AlbumList from '../../components/AlbumList.vue'
 import RankList from '@/views/index/RankList.vue'
+import MvList from '@/components/MvList.vue'
 
 import useHotRecom from '@/composables/useHotRecom'
 import useNewAlbum from '@/composables/useNewAlbum.js'
+import useNewMv from '@/composables/useNewMv.js'
 
 // -------------- 推荐歌单
 const {
@@ -81,10 +93,13 @@ const {
   playlist_loading,
   choosePlayListType
 } = useHotRecom()
-// -------------- 新碟
 
+// -------------- 新碟
 const { album_area, album_list, album_index, album_count, album_loading, chooseAlbumType } =
   useNewAlbum()
+
+// -------------- MV
+const { mv_area, mv_list, mv_index, mv_count, mv_loading, chooseMvType } = useNewMv()
 </script>
 <style lang="less" scoped>
 .h_title {
