@@ -14,19 +14,28 @@
         >
       </div>
       <div class="wrapper">
-        <play-list
+        <PlayList
           :playList="playlist_list"
           :loading="playlist_loading"
           :num="playlist_count"
-        ></play-list>
+        ></PlayList>
       </div>
     </div>
 
     <div class="album_list">
       <div class="h_title">
         <h3>新碟上架</h3>
+        <span
+          v-for="(item, index) in album_area"
+          :key="item.id"
+          :class="index == album_index ? 'active' : ''"
+          @click="chooseAlbumType(index)"
+          >{{ item.name }}</span
+        >
       </div>
-      <div class="wrapper"></div>
+      <div class="wrapper">
+        <AlbumList :albumList="album_list" :loading="album_loading" :num="album_count"></AlbumList>
+      </div>
     </div>
 
     <div class="top_list">RankList</div>
@@ -56,8 +65,10 @@
 <script setup>
 import Banners from '@/views/index/Banner.vue'
 import PlayList from '@/components/PlayList.vue'
+import AlbumList from '../../components/AlbumList.vue'
 
 import useHotRecom from '@/composables/useHotRecom'
+import useNewAlbum from '@/composables/useNewAlbum.js'
 
 // -------------- 推荐歌单
 const {
@@ -68,6 +79,10 @@ const {
   playlist_loading,
   choosePlayListType
 } = useHotRecom()
+// -------------- 新碟
+
+const { album_area, album_list, album_index, album_count, album_loading, chooseAlbumType } =
+  useNewAlbum()
 </script>
 <style lang="less" scoped>
 .h_title {

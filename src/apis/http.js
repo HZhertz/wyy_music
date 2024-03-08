@@ -36,4 +36,30 @@ const playList = ({ order = 'hot', cat = '', limit = 50, offset = 0 }) => {
   return api.get(`/top/playlist?limit=${limit}&order=${order}&cat=${cat}&offset=${offset}`, {})
 }
 
-export { login, logout, getUserInfo, serachHot, serachSuggest, getBanner, hotList, playList }
+/* ********* 专辑 ********* */
+// 新碟上架
+const topAlbum = ({
+  limit = 20,
+  offset = 0,
+  area = 'all',
+  type = 'new',
+  year = '',
+  month = ''
+}) => {
+  return api.get(
+    `/top/album?limit=${limit}&offset=${offset}&area=${area}&type=${type}&year=${year}&month=${month}`,
+    {}
+  )
+}
+
+export {
+  login,
+  logout,
+  getUserInfo,
+  serachHot,
+  serachSuggest,
+  getBanner,
+  hotList,
+  playList,
+  topAlbum
+}
