@@ -38,8 +38,9 @@
       </div>
     </div>
 
-    <div class="top_list">RankList</div>
-
+    <div class="top_list">
+      <RankList />
+    </div>
     <div class="mv_list">
       <div class="h_title">
         <h3>最新MV</h3>
@@ -66,6 +67,7 @@
 import Banners from '@/views/index/Banner.vue'
 import PlayList from '@/components/PlayList.vue'
 import AlbumList from '../../components/AlbumList.vue'
+import RankList from '@/views/index/RankList.vue'
 
 import useHotRecom from '@/composables/useHotRecom'
 import useNewAlbum from '@/composables/useNewAlbum.js'

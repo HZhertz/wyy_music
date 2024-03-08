@@ -26,6 +26,15 @@ const getBanner = () => {
   return api.get('/banner', {})
 }
 
+// 排行榜
+const toplist = () => {
+  return api.get('/toplist', {})
+}
+// 排行榜歌单列表
+const topRankList = ({ id = '', s = 8 }) => {
+  return api.get(`/playlist/detail?id=${id}&s=${s}`, {})
+}
+
 /* ********* 歌单 ********* */
 // 热门歌单分类
 const hotList = () => {
@@ -61,5 +70,7 @@ export {
   getBanner,
   hotList,
   playList,
-  topAlbum
+  topAlbum,
+  toplist,
+  topRankList
 }
