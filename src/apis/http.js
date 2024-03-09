@@ -62,6 +62,10 @@ const hotList = () => {
 const playList = ({ order = 'hot', cat = '', limit = 50, offset = 0 }) => {
   return api.get(`/top/playlist?limit=${limit}&order=${order}&cat=${cat}&offset=${offset}`, {})
 }
+// 歌单分类
+const catlist = () => {
+  return api.get('/playlist/catlist', {})
+}
 
 /* ********* 专辑 ********* */
 // 新碟上架
@@ -104,5 +108,6 @@ export {
   getHotDj,
   topArtists,
   topListDetail,
-  listDetail
+  listDetail,
+  catlist
 }
