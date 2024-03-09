@@ -35,12 +35,21 @@ const topArtists = ({ limit = 30, offset = 0 }) => {
   return api.get(`/top/artists?limit=${limit}&offset=${offset}`, {})
 }
 
+/* ********* 排行榜 ********* */
 // 排行榜
 const toplist = () => {
   return api.get('/toplist', {})
 }
 // 排行榜歌单列表
 const topRankList = ({ id = '', s = 8 }) => {
+  return api.get(`/playlist/detail?id=${id}&s=${s}`, {})
+}
+// 所有榜单内容摘要
+const topListDetail = () => {
+  return api.get('/toplist/detail', {})
+}
+// 歌单详情
+const listDetail = ({ id = '', s = 8 }) => {
   return api.get(`/playlist/detail?id=${id}&s=${s}`, {})
 }
 
@@ -93,5 +102,7 @@ export {
   topRankList,
   mv,
   getHotDj,
-  topArtists
+  topArtists,
+  topListDetail,
+  listDetail
 }

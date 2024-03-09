@@ -16,5 +16,8 @@ export default {
   },
   [types.SET_PLAYLISTTIPS](state, val = false) {
     state.isShowPlayListTips = val
+  },
+  [types.SET_PLAYSTATUS](state, val = false) {
+    state.isPlayed = val
   }
 }

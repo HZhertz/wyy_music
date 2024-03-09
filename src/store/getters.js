@@ -7,5 +7,16 @@ export default {
   },
   userInfo(state) {
     return state.userInfo || JSON.parse(window.localStorage.getItem('userInfo') || '{}')
+  },
+  playList(state) {
+    return state.playList.length
+      ? state.playList
+      : JSON.parse(window.localStorage.getItem('playList')) || []
+  },
+  isPlayed(state) {
+    return state.isPlayed
+  },
+  playIndex(state) {
+    return state.playIndex || JSON.parse(window.localStorage.getItem('playIndex')) || 0
   }
 }

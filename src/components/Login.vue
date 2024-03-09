@@ -42,7 +42,8 @@ const formInfo = reactive({
     pwd: [{ required: true, message: '请输入网易密码', trigger: 'blur' }]
   }
 })
-let { loginForm, loginFormRules } = toRefs(formInfo)
+const { loginForm, loginFormRules } = toRefs(formInfo)
+
 const submitForm = () => {
   proxy.$refs.loginFormRef.validate(async (valid) => {
     if (valid) {
