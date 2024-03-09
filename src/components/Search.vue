@@ -88,7 +88,7 @@ onMounted(() => {
 // 热门搜索
 const getSearchHot = async () => {
   const { data: res } = await proxy.$http.serachHot()
-  console.log('serachHotResponse:', res)
+  // console.log('serachHotResponse:', res)
   if (res.code !== 200) {
     return proxy.$msg.error('数据请求失败')
   }

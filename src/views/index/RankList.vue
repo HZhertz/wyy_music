@@ -97,7 +97,6 @@ const getToplist = async () => {
   top_list.value = res.list.slice(0, 4)
   top_list.value.forEach(async (item) => {
     const { data: res } = await proxy.$http.topRankList({ id: item.id })
-    console.log(res)
 
     songList.value[item.id] = proxy.$utils.formatSongs(
       res.playlist.tracks.slice(0, info.num),

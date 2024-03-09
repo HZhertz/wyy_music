@@ -30,6 +30,10 @@ const getBanner = () => {
 const getHotDj = ({ limit = 30, offset = 0 }) => {
   return api.get(`/dj/hot?limit=${limit}&offset=${offset}`, {})
 }
+// 热门歌手
+const topArtists = ({ limit = 30, offset = 0 }) => {
+  return api.get(`/top/artists?limit=${limit}&offset=${offset}`, {})
+}
 
 // 排行榜
 const toplist = () => {
@@ -88,5 +92,6 @@ export {
   toplist,
   topRankList,
   mv,
-  getHotDj
+  getHotDj,
+  topArtists
 }

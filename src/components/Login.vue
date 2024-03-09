@@ -43,7 +43,6 @@ const formInfo = reactive({
   }
 })
 let { loginForm, loginFormRules } = toRefs(formInfo)
-console.log(proxy)
 const submitForm = () => {
   proxy.$refs.loginFormRef.validate(async (valid) => {
     if (valid) {

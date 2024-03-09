@@ -69,6 +69,7 @@
         <div class="h_title">
           <h3>热门歌手</h3>
         </div>
+        <ArtistList></ArtistList>
       </div>
     </div>
   </div>
@@ -81,6 +82,7 @@ import AlbumList from '../../components/AlbumList.vue'
 import RankList from '@/views/index/RankList.vue'
 import MvList from '@/components/MvList.vue'
 import DjList from '@/views/index/DjList.vue'
+import ArtistList from '@/views/index/ArtistList.vue'
 
 import useHotRecom from '@/composables/useHotRecom'
 import useNewAlbum from '@/composables/useNewAlbum.js'
