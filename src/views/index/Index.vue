@@ -54,7 +54,7 @@
         >
       </div>
       <div class="wrapper">
-        <mv-list :mvList="mv_list" :loading="mv_loading" :num="mv_count"></mv-list>
+        <MvList :mvList="mv_list" :loading="mv_loading" :num="mv_count"></MvList>
       </div>
     </div>
 
@@ -63,6 +63,7 @@
         <div class="h_title">
           <h3>热门电台</h3>
         </div>
+        <DjList></DjList>
       </div>
       <div class="artist-list">
         <div class="h_title">
@@ -79,6 +80,7 @@ import PlayList from '@/components/PlayList.vue'
 import AlbumList from '../../components/AlbumList.vue'
 import RankList from '@/views/index/RankList.vue'
 import MvList from '@/components/MvList.vue'
+import DjList from '@/views/index/DjList.vue'
 
 import useHotRecom from '@/composables/useHotRecom'
 import useNewAlbum from '@/composables/useNewAlbum.js'

@@ -21,9 +21,14 @@ const serachHot = () => {
 const serachSuggest = ({ keywords = '' }) => {
   return api.get(`/search/suggest?keywords=${keywords}`, {})
 }
+
 // 首页轮播图
 const getBanner = () => {
   return api.get('/banner', {})
+}
+// 热门电台
+const getHotDj = ({ limit = 30, offset = 0 }) => {
+  return api.get(`/dj/hot?limit=${limit}&offset=${offset}`, {})
 }
 
 // 排行榜
@@ -82,5 +87,6 @@ export {
   topAlbum,
   toplist,
   topRankList,
-  mv
+  mv,
+  getHotDj
 }
