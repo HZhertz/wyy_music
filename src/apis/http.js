@@ -13,6 +13,7 @@ const getUserInfo = ({ uid = '' }) => {
   return api.get(`/user/detail?uid=${uid}`, {})
 }
 
+/* ********* 搜索 ********* */
 // 热门搜索
 const serachHot = () => {
   return api.get('/search/hot', {})
@@ -21,7 +22,15 @@ const serachHot = () => {
 const serachSuggest = ({ keywords = '' }) => {
   return api.get(`/search/suggest?keywords=${keywords}`, {})
 }
+// 搜索类型；默认为 1 即单曲 , 取值意义 : 1: 单曲, 10: 专辑, 100: 歌手, 1000: 歌单, 1002: 用户, 1004: MV, 1006: 歌词, 1009: 电台, 1014: 视频, 1018:综合
+const cloudsearch = ({ keywords = '', limit = 30, offset = 0, type = '1' }) => {
+  return api.get(
+    `/cloudsearch?keywords=${keywords}&limit=${limit}&offset=${offset}&type=${type}`,
+    {}
+  )
+}
 
+/* ********* 首页 ********* */
 // 首页轮播图
 const getBanner = () => {
   return api.get('/banner', {})
@@ -126,5 +135,6 @@ export {
   topListDetail,
   listDetail,
   catlist,
-  artistList
+  artistList,
+  cloudsearch
 }

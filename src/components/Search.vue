@@ -172,15 +172,20 @@ const jumpPage = (item, type) => {
   }
 }
 </script>
-<style>
-.el-select-dropdown__wrap {
-  max-height: 400px;
-}
-.el-select__wrapper {
-  box-shadow: 0 0 0 0 var(--el-border-color) inset;
-}
-</style>
+<style></style>
 <style lang="less" scoped>
+:deep(.el-select__wrapper) {
+  box-shadow: none;
+  &.is-focused {
+    box-shadow: 0 0 0 1px var(--color-text-height) inset;
+  }
+  &.is-hovering:not(.is-focused) {
+    box-shadow: none;
+  }
+}
+:deep(.el-select-dropdown__wrap) {
+  max-height: 800px;
+}
 .search {
   position: relative;
   display: flex;
@@ -192,13 +197,6 @@ const jumpPage = (item, type) => {
   .keyVal {
     width: 250px;
     border: 0;
-
-    // :deep(input) {
-    //   height: 40px;
-    //   line-height: 40px;
-    //   padding: 0 10px;
-    //   border: none;
-    // }
   }
 }
 .hot-search {
