@@ -27,11 +27,9 @@
               </p>
               <p class="song-related">
                 <span
-                  >专辑：<router-link
-                    class="song-album"
-                    :to="{ path: '/album', query: { id: songInfo.album.id } }"
-                    >{{ songInfo.album.name }}</router-link
-                  ></span
+                  >专辑：<router-link class="song-album" :to="{ path: '/album', query: { id: songInfo.album.id } }">{{
+                    songInfo.album.name
+                  }}</router-link></span
                 >
                 <span
                   >发行时间：<em>{{ songInfo.publishTime }}</em></span
@@ -45,8 +43,7 @@
             <div class="info-bottom">
               <div class="song-oper">
                 <span :class="['play-btn', 'play-all', songDisable]" @click="playing(songInfo)"
-                  ><i :class="['iconfont', playFontIcon]"></i>
-                  {{ songInfo.vip ? 'VIP尊享' : '立即播放' }}</span
+                  ><i :class="['iconfont', playFontIcon]"></i> {{ songInfo.vip ? 'VIP尊享' : '立即播放' }}</span
                 >
                 <span class="play-btn play-collect" @click="showAddList"
                   ><i class="iconfont icon-collect"></i> 收藏</span
@@ -62,10 +59,7 @@
             <div class="simi-main">
               <div class="simi-item" v-for="simiItem in simiSong" :key="simiItem.id">
                 <div class="simi-info">
-                  <router-link
-                    class="simi-name"
-                    :to="{ path: '/song', query: { id: simiItem.id } }"
-                  >
+                  <router-link class="simi-name" :to="{ path: '/song', query: { id: simiItem.id } }">
                     {{ simiItem.name }}
                   </router-link>
                   <div class="simi-author">
@@ -80,11 +74,7 @@
                 </div>
                 <div class="simi-song-status">
                   <i v-if="simiItem.vip" class="iconfont icon-vip"></i>
-                  <i
-                    v-else
-                    @click="playing(simiItem)"
-                    :class="['iconfont', playSimiIcon(simiItem)]"
-                  ></i>
+                  <i v-else @click="playing(simiItem)" :class="['iconfont', playSimiIcon(simiItem)]"></i>
                   <i class="iconfont icon-add" title="添加到列表"></i>
                 </div>
               </div>
@@ -164,7 +154,7 @@ const info = reactive({
   simiSong: [],
   playlists: [],
   mlogMv: [],
-  commentType: 0 // 0: 歌曲 1: mv 2: 歌单 3: 专辑  4: 电台 5: 视频 6: 动态
+  commentType: 0, // 0: 歌曲 1: mv 2: 歌单 3: 专辑  4: 电台 5: 视频 6: 动态
 })
 const { songInfo, sId, coverDesc, simiSong, playlists, mlogMv, commentType } = toRefs(info)
 const cBox = ref(null)
@@ -175,9 +165,7 @@ const playList = computed(() => store.getters.playList)
 const playIndex = computed(() => store.getters.playIndex)
 const curSongInfo = computed(() => playList.value[playIndex.value])
 
-const isCurSong = computed(
-  () => isPlayed.value && curSongInfo.value && curSongInfo.value.id === info.sId
-)
+const isCurSong = computed(() => isPlayed.value && curSongInfo.value && curSongInfo.value.id === info.sId)
 // 当前播放状态
 const playFontIcon = computed(() => (isCurSong.value ? 'icon-audio-pause' : 'icon-audio-play'))
 // 若是无版权获取vip歌曲 播放按钮置灰
@@ -187,7 +175,7 @@ const songDisable = computed(() => (info.songInfo.license || info.songInfo.vip ?
 const getSongDetail = async () => {
   const { data: res } = await proxy.$http.songDetail({
     ids: info.sId,
-    timestamp: new Date().valueOf()
+    timestamp: new Date().valueOf(),
   })
 
   if (res.code !== 200) {

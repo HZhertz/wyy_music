@@ -13,7 +13,9 @@ const concatPlayList = (list, playList = []) => {
 }
 // 当前歌曲在播放列表的索引
 const findIndex = (list, playList) => {
-  return playList.findIndex(d => { return d.id === list.id })
+  return playList.findIndex((d) => {
+    return d.id === list.id
+  })
 }
 
 export default {
@@ -33,5 +35,11 @@ export default {
     commit(types.SET_PLAYLIST, playList)
     commit(types.SET_PLAYSTATUS, true)
     commit(types.SET_PLAYINDEX, findIndex(list[0], playList))
-  }
+  },
+  // 播放歌曲列表里全部歌曲（清空当前播放列表）
+  playAll({ commit }, { list }) {
+    commit(types.SET_PLAYLIST, concatPlayList(list))
+    commit(types.SET_PLAYSTATUS, true)
+    commit(types.SET_PLAYINDEX, 0)
+  },
 }

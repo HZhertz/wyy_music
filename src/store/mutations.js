@@ -19,5 +19,9 @@ export default {
   },
   [types.SET_PLAYSTATUS](state, val = false) {
     state.isPlayed = val
-  }
+  },
+  [types.SET_PLAYINDEX](state, val = 0) {
+    state.playIndex = val
+    window.localStorage.setItem('playIndex', val)
+  },
 }
