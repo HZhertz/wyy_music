@@ -9,6 +9,7 @@ import util from '@/utils/util'
 import '@/assets/css/global.css'
 import '@/assets/less/reset.less'
 import '@/assets/fonts/fonts.css'
+import '@/assets/font_4460499/iconfont.css'
 
 const app = createApp(App)
 

@@ -11,6 +11,10 @@ const concatPlayList = (list, playList = []) => {
     playList
   )
 }
+// 当前歌曲在播放列表的索引
+const findIndex = (list, playList) => {
+  return playList.findIndex(d => { return d.id === list.id })
+}
 
 export default {
   loginSuc(context, val) {
@@ -21,5 +25,13 @@ export default {
     const playList = concatPlayList(list, state.playList)
     commit(types.SET_PLAYLIST, playList)
     commit(types.SET_PLAYLISTTIPS, true)
+  },
+  // 播放当前选中的歌曲
+  selectPlay({ commit, state }, { list }) {
+    const playList = concatPlayList(list, state.playList)
+
+    commit(types.SET_PLAYLIST, playList)
+    commit(types.SET_PLAYSTATUS, true)
+    commit(types.SET_PLAYINDEX, findIndex(list[0], playList))
   }
 }

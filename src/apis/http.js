@@ -62,6 +62,87 @@ const listDetail = ({ id = '', s = 8 }) => {
   return api.get(`/playlist/detail?id=${id}&s=${s}`, {})
 }
 
+/* ********* 歌曲 ********* */
+// 歌曲详情 多个id , 隔开
+const songDetail = ({ ids = '', timestamp = 0 }) => {
+  return api.post(`/song/detail?timestamp=${timestamp}`, { ids: ids })
+}
+// 获取相似音乐
+const simiSong = ({ id = '' }) => {
+  return api.get(`/simi/song?id=${id}`, {})
+}
+// 歌词
+const lyrics = ({ id = '' }) => {
+  return api.get(`/lyric?id=${id}`, {})
+}
+
+/* ********* 评论 ********* */
+/*
+ * 发送/删除评论
+ * t: 0删除 1发送 2回复
+ * type: 0: 歌曲 1: mv 2: 歌单 3: 专辑  4: 电台 5: 视频 6: 动态
+ * id: 对应资源id
+ * content: 发送的内容/对应内容的id
+ * commentId: 回复的评论id
+ */
+const comment = ({ t = 1, type = 0, id = '', content = '', commentId = '' }) => {
+  return api.get(
+    `/comment?t=${t}&type=${type}&id=${id}&content=${content}&commentId=${commentId}`,
+    {}
+  )
+}
+/*
+ * 给评论点赞
+ * id: 对应资源id
+ * cid: 评论id
+ * t: 是否点赞 1: 是  0: 取消
+ * type: 0: 歌曲 1: mv 2: 歌单 3: 专辑  4: 电台 5: 视频 6: 动态
+ */
+const commentLike = ({ id = '', cid = '', t = 1, type = 0 }) => {
+  return api.get(`/comment/like?id=${id}&cid=${cid}&t=${t}&type=${type}`, {})
+}
+
+// 歌曲评论
+const commentSong = ({ id = '', limit = 20, offset = 0, before = 0, timestamp = 0 }) => {
+  return api.get(
+    `/comment/music?id=${id}&limit=${limit}&offset=${offset}&before=${before}&timestamp=${timestamp}`,
+    {}
+  )
+}
+// 获取mv评论
+const commentMv = ({ id = '', limit = 20, offset = 0, before = 0, timestamp = 0 }) => {
+  return api.get(
+    `/comment/mv?id=${id}&limit=${limit}&offset=${offset}&before=${before}&timestamp=${timestamp}`,
+    {}
+  )
+}
+// 获取video评论
+const commentVideo = ({ id = '', limit = 20, offset = 0, before = 0, timestamp = 0 }) => {
+  return api.get(
+    `/comment/video?id=${id}&limit=${limit}&offset=${offset}&before=${before}&timestamp=${timestamp}`,
+    {}
+  )
+}
+// 专辑评论
+const albumComment = ({ id = '', limit = 20, offset = 0, before = 0, timestamp = 0 }) => {
+  return api.get(
+    `/comment/album?id=${id}&limit=${limit}&offset=${offset}&before=${before}&timestamp=${timestamp}`,
+    {}
+  )
+}
+
+/* ********* 专辑 ********* */
+// 获取专辑内容
+const album = ({ id = '' }) => {
+  return api.get(`/album?id=${id}`, {})
+}
+const albumDynamic = ({ id = '' }) => {
+  return api.get(`/album/detail/dynamic?id=${id}`, {})
+}
+const albumSub = ({ id = '', t = 1 }) => {
+  return api.get(`/album/sub?id=${id}&t=${t}`, {})
+}
+
 /* ********* 歌单 ********* */
 // 热门歌单分类
 const hotList = () => {
@@ -74,6 +155,10 @@ const playList = ({ order = 'hot', cat = '', limit = 50, offset = 0 }) => {
 // 歌单分类
 const catlist = () => {
   return api.get('/playlist/catlist', {})
+}
+// 包含这首歌的歌单
+const simiPlayList = ({ id = '' }) => {
+  return api.get(`/simi/playlist?id=${id}`, {})
 }
 
 /* ********* 专辑 ********* */
@@ -136,5 +221,15 @@ export {
   listDetail,
   catlist,
   artistList,
-  cloudsearch
+  cloudsearch,
+  songDetail,
+  simiSong,
+  simiPlayList,
+  lyrics,
+  commentSong,
+  commentMv,
+  commentVideo,
+  albumComment,
+  comment,
+  commentLike
 }
