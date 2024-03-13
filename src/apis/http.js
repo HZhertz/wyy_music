@@ -156,7 +156,18 @@ const topAlbum = ({ limit = 20, offset = 0, area = 'all', type = 'new', year = '
 const mv = ({ area = '', type = '', order = '', limit = 50, offset = 0 }) => {
   return api.get(`/mv/all?area=${area}&type=${type}&order=${order}&limit=${limit}&offset=${offset}`, {})
 }
-
+// 获取 mv详情
+const mvDetail = ({ id = '' }) => {
+  return api.get(`/mv/detail?mvid=${id}`, {})
+}
+// 获取 地址
+const mvUrl = ({ id = '', r = 1080 }) => {
+  return api.get(`/mv/url?id=${id}&r=${r}`, {})
+}
+// 相似mv
+const simiMv = ({ id = '' }) => {
+  return api.get(`/simi/mv?mvid=${id}`, {})
+}
 /* ********* 歌手 ********* */
 // 获取歌手列表
 /*
@@ -208,4 +219,7 @@ export {
   albumDynamic,
   albumSub,
   artistAlbum,
+  mvDetail,
+  mvUrl,
+  simiMv,
 }
