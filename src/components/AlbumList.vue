@@ -1,5 +1,5 @@
 <template>
-  <el-skeleton :loading="loading" animated :count="num" :throttle="500">
+  <el-skeleton :loading="loading" animated :count="size" :throttle="500">
     <template #template>
       <div class="item">
         <el-skeleton-item class="ske-img" variant="image" />
@@ -12,129 +12,71 @@
     </template>
     <template #default>
       <div class="album">
-        <router-link
-          :to="{ path: '/album', query: { id: item.id } }"
-          class="item"
-          :key="item.id"
-          v-for="item in albumList"
-        >
-          <div class="faceImg">
-            <el-image :src="item.picUrl + '?param=120y120'">
-              <div slot="placeholder" class="image-slot">
-                <i class="iconfont icon-placeholder"></i>
-              </div>
-            </el-image>
-          </div>
-          <div class="info">
-            <div class="album-type">{{ item.type }}</div>
-            <div class="album-name" v-if="item.name">{{ item.name }}</div>
-            <div class="artist-name" v-if="item.artist">{{ item.artist.name }}</div>
-          </div>
-        </router-link>
+        <div class="album-item" v-for="item in albumList">
+          <AlbumItem :item="item" :height="90" />
+        </div>
       </div>
+      <el-pagination
+        :current-page="page"
+        :page-size="size"
+        layout="prev, pager, next"
+        :total="total"
+        @current-change="currentChange"
+        hide-on-single-page
+      >
+      </el-pagination>
     </template>
   </el-skeleton>
 </template>
 <script setup>
+import { computed } from 'vue'
+import AlbumItem from './AlbumItem.vue'
+
 const props = defineProps({
-  albumList: Array,
-  num: Number,
-  loading: Boolean
+  albumList: {
+    type: Array,
+    required: true,
+  },
+  height: {
+    type: String,
+    default: '100',
+  },
+  // 前端分页 1|后端分页 2|滚动加载 0
+  paginaType: {
+    type: Number,
+    default: 1,
+  },
+  page: {
+    type: Number,
+    default: 1,
+  },
+  size: {
+    type: Number,
+    default: 12,
+  },
+  total: {
+    type: Number,
+    default: 0,
+  },
+  loading: {
+    type: Boolean,
+    default: true,
+  },
 })
+const emit = defineEmits(['update'])
+
+const currentChange = (page) => {
+  emit('update', page)
+}
 </script>
 <style scoped lang="less">
 .album {
   display: flex;
   flex-wrap: wrap;
-  flex-direction: row;
   justify-content: left;
-  padding-bottom: 20px;
-  margin: 0 -10px;
-  font-size: 0;
 
-  .item {
-    display: flex;
-    flex: 25%;
-    max-width: calc(100% / 4 - 20px);
-    margin: 20px 10px 0;
-    border-radius: 4px;
-    background: #f0f0f0;
-
-    &:hover {
-      .album-name {
-        color: var(--color-text-height);
-      }
-    }
-  }
-
-  .faceImg {
-    display: block;
-    position: relative;
-    flex: 2;
-    max-width: 120px;
-    max-height: 120px;
-    // width: 120px;
-    // height: 120px;
-
-    &::after {
-      display: inline-block;
-      content: '';
-      position: absolute;
-      top: 0;
-      right: -20px;
-      width: 100%;
-      height: 100%;
-      background: url('@/assets/img/disc.png') no-repeat;
-      background-size: contain;
-      transition: all 0.4s linear;
-    }
-
-    &:hover {
-      &::after {
-        right: -25px;
-        transform: rotate(90deg);
-      }
-    }
-  }
-
-  .el-image {
-    border-radius: 4px;
-    z-index: 2;
-  }
-
-  .info {
-    position: relative;
-    flex: 3;
-    margin-left: 40px;
-    overflow: hidden;
-
-    .album-name {
-      padding: 15% 20px 10px 0;
-      font-size: 16px;
-      color: var(--color-text-main);
-      word-break: break-all;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .artist-name {
-      font-size: 14px;
-      color: var(--color-text);
-    }
-
-    .album-type {
-      position: absolute;
-      top: 5px;
-      right: -30px;
-      width: 100px;
-      line-height: 24px;
-      font-size: 12px;
-      transform: rotate(45deg);
-      text-align: center;
-      color: #fff;
-      background-color: var(--color-text-height);
-    }
+  .album-item {
+    margin: 4px 6px;
   }
 }
 
@@ -151,8 +93,8 @@ const props = defineProps({
   .item {
     display: flex;
     flex: 25%;
-    max-width: calc(100% / 4 - 20px);
-    margin: 20px 10px 0;
+    max-width: calc(100% / 3 - 20px);
+    margin: 10px 5px 0;
   }
 
   .ske-img {

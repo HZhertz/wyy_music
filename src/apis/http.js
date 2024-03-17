@@ -180,9 +180,57 @@ const simiMv = ({ id = '' }) => {
 const artistList = ({ type = -1, area = -1, initial = '', limit = 50, offset = 0 }) => {
   return api.get(`/artist/list?type=${type}&area=${area}&initial=${initial}&limit=${limit}&offset=${offset}`, {})
 }
+// 获取歌手详情
+// 调用此接口 , 传入歌手 id, 可获得获取歌手详情
+const artistDetail = ({ id = '' }) => {
+  return api.get(`/artist/detail?id=${id}`, {})
+}
+// 歌手粉丝数量
+// 调用此接口 , 传入歌手 id, 可获取歌手粉丝数量
+const artistFollowCount = ({ id = '' }) => {
+  return api.get(`/artist/follow/count?id=${id}`, {})
+}
+// 收藏/取消收藏歌手
+// 调用此接口,可收藏歌手
+// t:操作,1 为收藏,其他为取消收藏
+const artistSub = ({ id = '', t }) => {
+  return api.get(`/artist/sub?id=${id}&t=${t}`, {})
+}
+// 获取歌手单曲
+// 调用此接口 , 传入歌手 id, 可获得歌手部分信息和热门歌曲
+const artist = ({ id = '' }) => {
+  return api.get(`/artists?id=${id}`, {})
+}
+// 歌手热门 50 首歌曲
+// 调用此接口,可获取歌手热门 50 首歌曲
+const artistHotSong = ({ id = '' }) => {
+  return api.get(`/artist/top/song?id=${id}`, {})
+}
+// 获取歌手全部歌曲
+// order - hot ,time 按照热门或者时间排序
+// limit - 取出歌单数量 , 默认为 50
+const artistAllSong = ({ id = '', order = 'time', limit = 50, offset = 0 }) => {
+  return api.get(`/artist/songs?id=${id}&order=${order}&limit=${limit}&offset=${offset}`, {})
+}
 // 获取歌手专辑
-const artistAlbum = ({ id = '', limit = 50, offset = 0 }) => {
+// 调用此接口 , 传入歌手 id, 可获得歌手专辑内容
+const artistAlbum = ({ id = '', limit = 12, offset = 0 }) => {
   return api.get(`/artist/album?id=${id}&limit=${limit}&offset=${offset}`, {})
+}
+// 获取歌手 mv
+// 调用此接口 , 传入歌手 id, 可获得歌手 mv 信息
+const artistMv = ({ id = '', limit = 12, offset = 0 }) => {
+  return api.get(`/artist/mv?id=${id}&limit=${limit}&offset=${offset}`, {})
+}
+// 获取歌手描述
+// 调用此接口 , 传入歌手 id, 可获得歌手描述
+const artistDesc = ({ id = '' }) => {
+  return api.get(`/artist/desc?id=${id}`, {})
+}
+// 获取相似歌手
+// 调用此接口 , 传入歌手 id, 可获得相似歌手
+const simiArtist = ({ id = '' }) => {
+  return api.get(`/simi/artist?id=${id}`, {})
 }
 
 export {
@@ -218,8 +266,16 @@ export {
   album,
   albumDynamic,
   albumSub,
-  artistAlbum,
   mvDetail,
   mvUrl,
   simiMv,
+  artistDetail,
+  artistFollowCount,
+  artistHotSong,
+  artist,
+  artistAllSong,
+  artistAlbum,
+  artistMv,
+  artistDesc,
+  simiArtist,
 }

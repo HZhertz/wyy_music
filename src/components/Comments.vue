@@ -37,15 +37,8 @@
     </div>
     <div class="comment_area">
       <template v-if="comments.length">
-        <div
-          class="comment_item"
-          v-for="(item, index) in comments"
-          :key="item.commentId + index + ''"
-        >
-          <router-link
-            :to="{ path: '/user', query: { id: item.user.userId } }"
-            class="comment_avatar"
-          >
+        <div class="comment_item" v-for="(item, index) in comments" :key="item.commentId + index + ''">
+          <router-link :to="{ path: '/user', query: { id: item.user.userId } }" class="comment_avatar">
             <el-image :src="item.user.avatarUrl + '?param=120y120'">
               <div slot="placeholder" class="image-slot">
                 <i class="iconfont icon-placeholder"></i>
@@ -53,17 +46,11 @@
             </el-image>
           </router-link>
           <div class="comment_info">
-            <router-link :to="{ path: '/user', query: { id: item.user.userId } }">{{
-              item.user.nickname
-            }}</router-link>
+            <router-link :to="{ path: '/user', query: { id: item.user.userId } }">{{ item.user.nickname }}</router-link>
             <div class="comment_content">
               {{ item.content }}
             </div>
-            <div
-              class="comment_reply"
-              v-for="replyItem in item.beReplied"
-              :key="replyItem.beRepliedCommentId"
-            >
+            <div class="comment_reply" v-for="replyItem in item.beReplied" :key="replyItem.beRepliedCommentId">
               <router-link :to="{ path: '/user', query: { id: replyItem.user.userId } }">{{
                 replyItem.user.nickname
               }}</router-link
@@ -124,12 +111,12 @@ import { getCurrentInstance, computed, onMounted, watch, reactive, ref, toRefs }
 const props = defineProps({
   sId: {
     type: [Number, String],
-    default: 0
+    default: 0,
   },
   type: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 })
 
 const { proxy } = getCurrentInstance()
@@ -147,7 +134,7 @@ const info = reactive({
   total: 0,
   isEmpty: false,
   replyCommentId: 0,
-  replyIndex: -1
+  replyIndex: -1,
 })
 const {
   msg,
@@ -162,7 +149,7 @@ const {
   currentPage,
   isEmpty,
   replyCommentId,
-  replyIndex
+  replyIndex,
 } = toRefs(info)
 
 const userInfo = computed(() => store.getters.userInfo)
@@ -199,7 +186,7 @@ const getCommentList = async (type) => {
     limit: info.limit,
     offset: info.offset,
     before: info.before,
-    timestamp: new Date().valueOf()
+    timestamp: new Date().valueOf(),
   })
 
   if (res.code !== 200) {
@@ -223,10 +210,10 @@ const commentHandler = async (t, content, commentId) => {
     type: props.type, // 0: 歌曲 1: mv 2: 歌单 3: 专辑  4: 电台 5: 视频 6: 动态
     id: info.curId, // 对应资源id
     content: content, // 发送的内容/对应内容的id
-    commentId: commentId // 回复的评论id
+    commentId: commentId, // 回复的评论id
   }
   const { data: res } = await proxy.$http.comment(params)
-  console.log(res)
+  window.console.log(res)
   if (res.code !== 200) {
     return proxy.$msg.error('数据请求失败')
   }
@@ -258,7 +245,7 @@ const delComment = (item) => {
   ElMessageBox.confirm('确定删除评论？', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
-    center: true
+    center: true,
   })
     .then(() => {
       commentHandler(0, '', item.commentId)
@@ -272,8 +259,7 @@ const replyComment = (item, index) => {
   //   store.commit('SET_LOGINDIALOG', true)
   //   return
   // }
-  info.replyCommentId =
-    info.replyCommentId === item.commentId && info.replyIndex === index ? 0 : item.commentId
+  info.replyCommentId = info.replyCommentId === item.commentId && info.replyIndex === index ? 0 : item.commentId
   info.replyIndex = index
 }
 
@@ -296,7 +282,7 @@ const likeComment = async (item) => {
     id: info.curId,
     cid: item.commentId,
     t: Number(!item.liked),
-    type: props.type
+    type: props.type,
   })
 
   if (res.code !== 200) {

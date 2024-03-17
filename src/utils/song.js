@@ -1,7 +1,9 @@
+import { Static } from 'vue'
 import utils from './util'
 
 export default class Song {
   constructor({ id, name, mvId, singer, album, alia, duration, url, vip, license, publishTime }) {
+		
     this.id = id
     this.name = name
     this.mvId = mvId

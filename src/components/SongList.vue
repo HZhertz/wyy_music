@@ -27,11 +27,7 @@
               {{ item.name }}
             </router-link>
             <template v-if="typeSize !== 'mini'">
-              <router-link
-                class="mv-name"
-                :to="{ path: '/mvlist/mv', query: { id: item.mvId } }"
-                v-if="item.mvId"
-              >
+              <router-link class="mv-name" :to="{ path: '/mvlist/mv', query: { id: item.mvId } }" v-if="item.mvId">
                 <i class="iconfont icon-mv"></i>
               </router-link>
               <i v-if="item.vip" class="iconfont icon-vip"></i>
@@ -48,35 +44,22 @@
             >
           </div>
           <div class="columnAlbum" v-if="typeSize !== 'mini'">
-            <router-link
-              class="songlist-album"
-              :to="{ path: '/album', query: { id: item.album.id } }"
-              v-if="item.album"
-              >{{ item.album.name }}</router-link
-            >
+            <router-link class="songlist-album" :to="{ path: '/album', query: { id: item.album.id } }" v-if="item.album">{{
+              item.album.name
+            }}</router-link>
           </div>
           <div class="columnTime">
             <div class="songlist-time">
               {{ item.duration }}
             </div>
             <div class="songlist-oper">
-              <i
-                class="iconfont icon-add"
-                title="添加到列表"
-                v-if="typeSize !== 'mini'"
-                @click="addSongList(item)"
-              ></i>
+              <i class="iconfont icon-add" title="添加到列表" v-if="typeSize !== 'mini'" @click="addSongList(item)"></i>
               <!-- <el-popover placement="bottom" trigger="click" ref="popAddList">
                                 <i class="iconfont icon-add-list" title="添加到歌单" slot="reference" @click="closeAddListPop"></i>
                                 <add-list :tracks="item.id" @closeAddListPop="closeAddListPop"></add-list>
                             </el-popover> -->
               <i class="iconfont icon-collect" @click="likeSong(item)"></i>
-              <i
-                class="iconfont icon-del"
-                title="删除"
-                v-if="typeSize === 'mini'"
-                @click.stop="delList(index)"
-              ></i>
+              <i class="iconfont icon-del" title="删除" v-if="typeSize === 'mini'" @click.stop="delList(index)"></i>
             </div>
           </div>
         </div>
@@ -84,11 +67,12 @@
     </div>
     <div class="pagination" v-if="isShowPagination">
       <el-pagination
-        @current-change="currentChange"
-        :page-size="pageSize"
-        :current-page.sync="currentPage"
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize"
         layout="prev, pager, next"
-        :total="songList.length"
+        :total="total"
+        @current-change="currentChange"
+        hide-on-single-page
       >
       </el-pagination>
     </div>
@@ -96,45 +80,54 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, reactive, ref, toRefs, watch } from '@vue/runtime-core'
+import { computed, nextTick, onMounted, reactive, ref, toRefs, watch } from 'vue'
 import { useStore } from 'vuex'
 
 const props = defineProps({
   songList: {
     // 歌曲列表
     type: Array,
-    required: true
+    required: true,
   },
   typeSize: {
     // 播放列表展示类型， 默认normal是歌单下的展示列表，mini是播放条下的歌曲列表的
     type: String,
-    default: 'normal'
+    default: 'normal',
   },
   stripe: {
     // 隔行变色
     type: Boolean,
-    default: false
+    default: false,
   },
   height: {
     type: [Number, String],
-    default: 'auto'
+    default: 'auto',
   },
   // 分页加载 || 无限滚动加载
   isScroll: {
     type: Boolean,
-    default: false
+    default: false,
   },
   offset: {
     // 若是列表有分页，偏移数量
     type: Number,
-    default: 0
+    default: 0,
+  },
+  currentPage: {
+    type: Number,
+    default: 1,
   },
   pageSize: {
     // 分页 每页展示数量
     type: Number,
-    default: 20
-  }
+    default: 20,
+  },
+  total: {
+    type: Number,
+    default: 0,
+  },
 })
+const emit = defineEmits(['update'])
 const store = useStore()
 
 const curSongRef = ref(null)
@@ -144,9 +137,9 @@ const info = reactive({
   height: props.height,
   curScroll: -1 || 1,
   pageSize: props.pageSize,
-  currentPage: 1,
+  currentPage: props.currentPage,
   playing: false,
-  timer: null
+  timer: null,
 })
 const { typeSize, height, curScroll, pageSize, currentPage, playing, timer } = toRefs(info)
 
@@ -180,9 +173,7 @@ const scrollCurSong = (cur) => {
           curScroll.value = Math.abs(curScroll.value) > 0 ? curScroll.value + 50 : 0
         } else {
           curScroll.value =
-            Math.abs(curScroll.value) < ((props.songList.length - 8) / 2) * 100
-              ? curScroll.value - 50
-              : curScroll.value
+            Math.abs(curScroll.value) < ((props.songList.length - 8) / 2) * 100 ? curScroll.value - 50 : curScroll.value
         }
       },
       { passive: true }
@@ -195,15 +186,13 @@ onMounted(() => {
 
 // 获取歌曲列表
 const list = computed(() => {
-  if (!props.isScroll) {
-    // 分页加载数据
-    return props.songList.slice(
-      (currentPage.value - 1) * pageSize.value,
-      currentPage.value * pageSize.value
-    )
-  } else {
-    return props.songList
-  }
+  // if (!props.isScroll) {
+  //   // 分页加载数据
+  //   return props.songList.slice((currentPage.value - 1) * pageSize.value, currentPage.value * pageSize.value)
+  // } else {
+  //   return props.songList
+  // }
+  return props.songList
 })
 
 const curSongSty = computed(() => {
@@ -227,7 +216,7 @@ const isCurSong = computed(() => {
       props.stripe ? (index % 2 === 0 ? 'stripe' : '') : '',
       isPlayed.value && item.id === curSongInfo.value.id ? 'active' : '',
       item.license || item.vip ? 'disable' : '',
-      item.vip ? 'vip' : ''
+      item.vip ? 'vip' : '',
     ]
   }
 })
@@ -235,11 +224,7 @@ const isCurSong = computed(() => {
 // 序号及播放状态
 const playIcon = computed(() => {
   return (item) => {
-    return [
-      'iconfont',
-      'playicon',
-      isPlayed.value && item.id === curSongInfo.value.id ? 'icon-pause' : 'icon-play'
-    ]
+    return ['iconfont', 'playicon', isPlayed.value && item.id === curSongInfo.value.id ? 'icon-pause' : 'icon-play']
   }
 })
 
@@ -278,12 +263,15 @@ const delList = (index) => {
 }
 
 const isShowPagination = computed(() => {
-  return props.songList.length > pageSize.value && !props.isScroll
+  // return props.songList.length > pageSize.value && !props.isScroll
+  return !props.isScroll
 })
 
 // 歌曲列表分页功能
 const currentChange = (page) => {
-  currentPage.value = page
+  // info.currentPage = page
+
+  emit('update', page)
 }
 
 watch(
@@ -297,14 +285,14 @@ watch(
   { deep: true }
 )
 
-watch(
-  () => {
-    return props.songList
-  },
-  () => {
-    currentPage.value = 1
-  }
-)
+// watch(
+//   () => {
+//     return props.songList
+//   }
+//   // () => {
+//   //   currentPage.value = 1
+//   // }
+// )
 </script>
 <style scoped lang="less">
 .list-header {

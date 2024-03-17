@@ -14,11 +14,7 @@
         >
       </div>
       <div class="wrapper">
-        <PlayList
-          :playList="playlist_list"
-          :loading="playlist_loading"
-          :num="playlist_count"
-        ></PlayList>
+        <PlayList :playList="playlist_list" :loading="playlist_loading" :num="playlist_count" />
       </div>
     </div>
 
@@ -34,7 +30,7 @@
         >
       </div>
       <div class="wrapper">
-        <AlbumList :albumList="album_list" :loading="album_loading" :num="album_count"></AlbumList>
+        <AlbumList :albumList="album_list" :loading="album_loading" :num="album_count" />
       </div>
     </div>
 
@@ -89,18 +85,10 @@ import useNewAlbum from '@/composables/useNewAlbum.js'
 import useNewMv from '@/composables/useNewMv.js'
 
 // -------------- 推荐歌单
-const {
-  playlist_tags,
-  playlist_list,
-  playlist_index,
-  playlist_count,
-  playlist_loading,
-  choosePlayListType
-} = useHotRecom()
+const { playlist_tags, playlist_list, playlist_index, playlist_count, playlist_loading, choosePlayListType } = useHotRecom()
 
 // -------------- 新碟
-const { album_area, album_list, album_index, album_count, album_loading, chooseAlbumType } =
-  useNewAlbum()
+const { album_area, album_list, album_index, album_count, album_loading, chooseAlbumType } = useNewAlbum()
 
 // -------------- MV
 const { mv_area, mv_list, mv_index, mv_count, mv_loading, chooseMvType } = useNewMv()
