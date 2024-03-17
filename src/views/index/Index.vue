@@ -15,7 +15,7 @@
         </div>
       </div>
       <div class="wrapper">
-        <PlayList :playList="playlist_list" :loading="playlist_loading" :num="playlist_count" />
+        <PlayList :playList="playlist_list" :loading="playlist_loading" :total="playlist_count" />
       </div>
     </div>
 
@@ -113,7 +113,7 @@ const { mv_area, mv_list, mv_index, mv_count, mv_loading, chooseMvType } = useNe
   }
 
   .tag-box {
-    min-width: 300px;
+    min-width: 500px;
     span {
       display: inline-block;
       font-size: 16px;
@@ -152,6 +152,7 @@ const { mv_area, mv_list, mv_index, mv_count, mv_loading, chooseMvType } = useNe
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 20px 27px rgb(0 0 0 / 5%);
+  min-width: 640px;
 }
 
 .top_list {

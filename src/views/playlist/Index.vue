@@ -46,11 +46,11 @@
       <div
         class="wrapper infinite-list"
         v-infinite-scroll="loadMore"
-        infinite-scroll-disabled="busy"
+        :infinite-scroll-disabled="disabled"
         infinite-scroll-distance="100"
       >
-        <PlayList :playList="playlist_list" :loading="playlist_loading" :num="playlist_count" />
-        <template v-if="busy">
+        <PlayList :playList="playlist_list" :loading="playlist_loading" :total="playlist_count" />
+        <template v-if="playlist_loading">
           <Loading />
         </template>
       </div>
@@ -80,7 +80,8 @@ const info = reactive({
   playlist_list: [],
   playlist_count: 24,
   playlist_loading: true,
-  busy: true,
+  more: true,
+
   params: {
     order: 'hot',
     cat: cat,
@@ -97,7 +98,8 @@ const {
   playlist_list,
   playlist_count,
   playlist_loading,
-  busy,
+  more,
+
   params,
 } = toRefs(info)
 
@@ -140,11 +142,14 @@ const getPlayList = async (params) => {
   if (res.code !== 200) {
     return proxy.$msg.error('数据请求失败')
   }
+  console.log(res)
 
   info.playlist_list = info.params.offset !== 0 ? [...info.playlist_list, ...res.playlists] : res.playlists
-  info.busy = info.playlist_list.length >= res.total
+  info.more = res.more
   info.playlist_loading = false
 }
+const disabled = computed(() => info.playlist_loading || !info.more)
+
 onMounted(() => {
   getCatlist()
   getPlayList(info.params)
@@ -163,7 +168,8 @@ const selectOrder = (type) => {
 }
 
 const loadMore = () => {
-  info.busy = true
+  console.log(info.params)
+
   info.params.offset = info.playlist_list.length
 }
 
@@ -186,7 +192,6 @@ watch(
   () => info.params,
   (newVal, oldVal) => {
     if (newVal.cat !== oldVal.cat) {
-      info.busy = true
       info.playlist_list = []
     }
     getPlayList(newVal)
@@ -211,77 +216,70 @@ const moreSty = computed(() => {
 }
 .filter {
   display: flex;
-  height: 116px;
+  min-width: 540px;
   padding: 20px;
   margin-bottom: 25px;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 20px 27px rgb(0 0 0 / 5%);
-}
-.filter-item {
-  flex: 2;
-  border-left: 1px solid #f5f5f5;
-  padding-left: 35px;
 
-  .filter-title {
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-
-  .filter-box {
-    font-size: 0;
-  }
-
-  .item-box {
-    display: inline-block;
-    width: calc(100% / 3);
-    vertical-align: top;
-
-    em {
-      display: inline-block;
-      font-style: normal;
-      font-size: 14px;
-      line-height: 26px;
-      margin-top: 4px;
-      cursor: pointer;
-    }
-
-    &.active {
-      em {
-        padding: 0 6px 0 5px;
-        margin: 4px -5px 0;
-        color: #fff;
-        font-style: normal;
-        background: var(--color-text-height);
-      }
-    }
-  }
-
-  .filter-more {
-    width: 50px;
-
-    &.active {
-      em {
-        width: 40px;
-        overflow: hidden;
-        height: 26px;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        vertical-align: top;
-      }
-    }
-  }
-
-  &:first-child {
+  .filter-item {
     flex: 1;
-    border: 0;
-    padding-left: 0;
+    border-left: 1px solid #f5f5f5;
+    padding-left: 35px;
+
+    .filter-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
 
     .item-box {
-      width: 50%;
+      display: inline-block;
+      width: 44px;
+      margin: 2px;
+      vertical-align: top;
+
+      em {
+        display: inline-block;
+        font-style: normal;
+        font-size: 14px;
+        line-height: 26px;
+        margin-top: 4px;
+        cursor: pointer;
+      }
+
+      &.active {
+        em {
+          color: #fff;
+          font-style: normal;
+          background: var(--color-text-height);
+        }
+      }
+    }
+
+    .filter-more {
+      width: 50px;
+
+      &.active {
+        em {
+          width: 40px;
+          overflow: hidden;
+          height: 26px;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          vertical-align: top;
+        }
+      }
+    }
+
+    &:first-child {
+      flex: 1;
+      border: 0;
+      padding-left: 0;
     }
   }
 }
+
 .filter-drop {
   .item-box {
     display: inline-block;
