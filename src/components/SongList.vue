@@ -27,7 +27,11 @@
               {{ item.name }}
             </router-link>
             <template v-if="typeSize !== 'mini'">
-              <router-link class="mv-name" :to="{ path: '/mvlist/mv', query: { id: item.mvId } }" v-if="item.mvId">
+              <router-link
+                class="mv-name"
+                :to="{ path: '/mvlist/mv', query: { id: item.mvId } }"
+                v-if="item.mvId"
+              >
                 <i class="iconfont icon-mv"></i>
               </router-link>
               <i v-if="item.vip" class="iconfont icon-vip"></i>
@@ -44,22 +48,35 @@
             >
           </div>
           <div class="columnAlbum" v-if="typeSize !== 'mini'">
-            <router-link class="songlist-album" :to="{ path: '/album', query: { id: item.album.id } }" v-if="item.album">{{
-              item.album.name
-            }}</router-link>
+            <router-link
+              class="songlist-album"
+              :to="{ path: '/album', query: { id: item.album.id } }"
+              v-if="item.album"
+              >{{ item.album.name }}</router-link
+            >
           </div>
           <div class="columnTime">
             <div class="songlist-time">
               {{ item.duration }}
             </div>
             <div class="songlist-oper">
-              <i class="iconfont icon-add" title="添加到列表" v-if="typeSize !== 'mini'" @click="addSongList(item)"></i>
+              <i
+                class="iconfont icon-add"
+                title="添加到列表"
+                v-if="typeSize !== 'mini'"
+                @click="addSongList(item)"
+              ></i>
               <!-- <el-popover placement="bottom" trigger="click" ref="popAddList">
                                 <i class="iconfont icon-add-list" title="添加到歌单" slot="reference" @click="closeAddListPop"></i>
                                 <add-list :tracks="item.id" @closeAddListPop="closeAddListPop"></add-list>
                             </el-popover> -->
               <i class="iconfont icon-collect" @click="likeSong(item)"></i>
-              <i class="iconfont icon-del" title="删除" v-if="typeSize === 'mini'" @click.stop="delList(index)"></i>
+              <i
+                class="iconfont icon-del"
+                title="删除"
+                v-if="typeSize === 'mini'"
+                @click.stop="delList(index)"
+              ></i>
             </div>
           </div>
         </div>
@@ -67,6 +84,7 @@
     </div>
     <div class="pagination" v-if="isShowPagination">
       <el-pagination
+        v-if="isShowPagination"
         v-model:current-page="currentPage"
         v-model:page-size="pageSize"
         layout="prev, pager, next"
@@ -126,6 +144,10 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
+  isShowPag: {
+    type: Boolean,
+    default: true,
+  },
 })
 const emit = defineEmits(['update'])
 const store = useStore()
@@ -173,7 +195,9 @@ const scrollCurSong = (cur) => {
           curScroll.value = Math.abs(curScroll.value) > 0 ? curScroll.value + 50 : 0
         } else {
           curScroll.value =
-            Math.abs(curScroll.value) < ((props.songList.length - 8) / 2) * 100 ? curScroll.value - 50 : curScroll.value
+            Math.abs(curScroll.value) < ((props.songList.length - 8) / 2) * 100
+              ? curScroll.value - 50
+              : curScroll.value
         }
       },
       { passive: true }
@@ -224,7 +248,11 @@ const isCurSong = computed(() => {
 // 序号及播放状态
 const playIcon = computed(() => {
   return (item) => {
-    return ['iconfont', 'playicon', isPlayed.value && item.id === curSongInfo.value.id ? 'icon-pause' : 'icon-play']
+    return [
+      'iconfont',
+      'playicon',
+      isPlayed.value && item.id === curSongInfo.value.id ? 'icon-pause' : 'icon-play',
+    ]
   }
 })
 
@@ -264,7 +292,8 @@ const delList = (index) => {
 
 const isShowPagination = computed(() => {
   // return props.songList.length > pageSize.value && !props.isScroll
-  return !props.isScroll
+	console.log(props.isShowPag && !props.isScroll);
+  return props.isShowPag && !props.isScroll
 })
 
 // 歌曲列表分页功能

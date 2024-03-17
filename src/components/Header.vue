@@ -11,7 +11,7 @@
         </el-image>
         <span class="nickname">{{ userInfo.nickname }}</span>
         <span class="set"><i class="iconfont icon-set"></i></span>
-        <span class="quit"><i class="iconfont icon-quit"></i></span>
+        <span class="quit" @click="logout"><i class="iconfont icon-quit"></i></span>
       </div>
       <span class="login-btn" @click="loginDialog" v-else>登录</span>
     </div>
@@ -19,10 +19,14 @@
 </template>
 <script setup>
 import Search from '@/components/Search.vue'
-import { computed } from 'vue'
+import { computed, getCurrentInstance } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 const store = useStore()
+const route = useRoute()
+const router = useRouter()
+const { proxy } = getCurrentInstance()
 
 // 是否显示登录弹窗
 const loginDialog = () => store.commit('SET_LOGINDIALOG', true)
@@ -33,6 +37,26 @@ const isLogin = computed(() => {
 const userInfo = computed(() => {
   return store.getters.userInfo
 })
+
+const logout = async () => {
+  const { data: res } = await proxy.$http.logout()
+
+  if (res.code !== 200) {
+    return proxy.$msg.error('数据请求失败')
+  }
+
+  proxy.$msg.success('退出成功')
+  window.localStorage.removeItem('token')
+  window.localStorage.removeItem('cookie')
+  window.localStorage.removeItem('userInfo')
+  window.localStorage.removeItem('isLogin')
+  store.commit('SET_USERINFO', {})
+  store.commit('SET_LOGIN', false)
+
+  if (route.path.indexOf('/my') >= 0) {
+    router.push({ path: '/' })
+  }
+}
 </script>
 
 <style lang="less" scoped>

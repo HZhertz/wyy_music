@@ -98,19 +98,31 @@ const commentLike = ({ id = '', cid = '', t = 1, type = 0 }) => {
 
 // 歌曲评论
 const commentSong = ({ id = '', limit = 20, offset = 0, before = 0, timestamp = 0 }) => {
-  return api.get(`/comment/music?id=${id}&limit=${limit}&offset=${offset}&before=${before}&timestamp=${timestamp}`, {})
+  return api.get(
+    `/comment/music?id=${id}&limit=${limit}&offset=${offset}&before=${before}&timestamp=${timestamp}`,
+    {}
+  )
 }
 // 获取mv评论
 const commentMv = ({ id = '', limit = 20, offset = 0, before = 0, timestamp = 0 }) => {
-  return api.get(`/comment/mv?id=${id}&limit=${limit}&offset=${offset}&before=${before}&timestamp=${timestamp}`, {})
+  return api.get(
+    `/comment/mv?id=${id}&limit=${limit}&offset=${offset}&before=${before}&timestamp=${timestamp}`,
+    {}
+  )
 }
 // 获取video评论
 const commentVideo = ({ id = '', limit = 20, offset = 0, before = 0, timestamp = 0 }) => {
-  return api.get(`/comment/video?id=${id}&limit=${limit}&offset=${offset}&before=${before}&timestamp=${timestamp}`, {})
+  return api.get(
+    `/comment/video?id=${id}&limit=${limit}&offset=${offset}&before=${before}&timestamp=${timestamp}`,
+    {}
+  )
 }
 // 专辑评论
 const albumComment = ({ id = '', limit = 20, offset = 0, before = 0, timestamp = 0 }) => {
-  return api.get(`/comment/album?id=${id}&limit=${limit}&offset=${offset}&before=${before}&timestamp=${timestamp}`, {})
+  return api.get(
+    `/comment/album?id=${id}&limit=${limit}&offset=${offset}&before=${before}&timestamp=${timestamp}`,
+    {}
+  )
 }
 
 /* ********* 专辑 ********* */
@@ -144,11 +156,38 @@ const catlist = () => {
 const simiPlayList = ({ id = '' }) => {
   return api.get(`/simi/playlist?id=${id}`, {})
 }
+// 歌单详情
+const playlistdetail = ({ id = '', s = 8 }) => {
+  return api.get(`/playlist/detail?id=${id}&s=${s}`, {})
+}
+// 获取歌单所有歌曲
+const playlistTrackAll = ({ id, limit, offset }) => {
+  return api.get(`/playlist/track/all?id=${id}&limit=${limit}&offset=${offset}`, {})
+}
+// 歌单收藏用户
+const playlistSCollect = ({ id = '', limit = 20, offset = 0 }) => {
+  return api.get(`/playlist/subscribers?id=${id}&limit=${limit}&offset=${offset}`, {})
+}
+// 相关歌单推荐
+const playlistRelated = ({ id = '' }) => {
+  return api.get(`/related/playlist?id=${id}`, {})
+}
+// 歌单评论
+const playlistComment = ({ id = '', limit = 20, offset = 0, before = 0 }) => {
+  return api.get(`/comment/playlist?id=${id}&limit=${limit}&offset=${offset}&before=${before}`, {})
+}
+// 收藏、取消歌单 1：收藏 2取消
+const subPlayList = ({ t = 1, id = '' }) => {
+  return api.get(`/playlist/subscribe?t=${t}&id=${id}`, {})
+}
 
 /* ********* 专辑 ********* */
 // 新碟上架
 const topAlbum = ({ limit = 20, offset = 0, area = 'all', type = 'new', year = '', month = '' }) => {
-  return api.get(`/top/album?limit=${limit}&offset=${offset}&area=${area}&type=${type}&year=${year}&month=${month}`, {})
+  return api.get(
+    `/top/album?limit=${limit}&offset=${offset}&area=${area}&type=${type}&year=${year}&month=${month}`,
+    {}
+  )
 }
 
 /* ********* MV ********* */
@@ -178,7 +217,10 @@ const simiMv = ({ id = '' }) => {
  * offset: 0
  */
 const artistList = ({ type = -1, area = -1, initial = '', limit = 50, offset = 0 }) => {
-  return api.get(`/artist/list?type=${type}&area=${area}&initial=${initial}&limit=${limit}&offset=${offset}`, {})
+  return api.get(
+    `/artist/list?type=${type}&area=${area}&initial=${initial}&limit=${limit}&offset=${offset}`,
+    {}
+  )
 }
 // 获取歌手详情
 // 调用此接口 , 传入歌手 id, 可获得获取歌手详情
@@ -278,4 +320,10 @@ export {
   artistMv,
   artistDesc,
   simiArtist,
+  playlistdetail,
+  playlistSCollect,
+  playlistRelated,
+  playlistComment,
+  subPlayList,
+  playlistTrackAll,
 }

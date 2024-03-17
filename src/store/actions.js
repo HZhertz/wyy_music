@@ -20,7 +20,7 @@ const findIndex = (list, playList) => {
 
 export default {
   loginSuc(context, val) {
-    context.commit('setLoginDialog', val)
+    context.commit(types.SET_LOGINDIALOG, val)
   },
   // 添加歌曲到当前播放列表
   addList({ commit, state }, { list }) {
