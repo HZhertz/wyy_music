@@ -39,12 +39,8 @@
           ></em>
         </h2>
         <div class="type">
-          <span :class="params.order === 'hot' ? 'active' : ''" @click="selectOrder('hot')"
-            >热门</span
-          >
-          <span :class="params.order === 'new' ? 'active' : ''" @click="selectOrder('new')"
-            >最新</span
-          >
+          <span :class="params.order === 'hot' ? 'active' : ''" @click="selectOrder('hot')">热门</span>
+          <span :class="params.order === 'new' ? 'active' : ''" @click="selectOrder('new')">最新</span>
         </div>
       </div>
       <div
@@ -53,11 +49,7 @@
         infinite-scroll-disabled="busy"
         infinite-scroll-distance="100"
       >
-        <play-list
-          :playList="playlist_list"
-          :loading="playlist_loading"
-          :num="playlist_count"
-        ></play-list>
+        <PlayList :playList="playlist_list" :loading="playlist_loading" :num="playlist_count" />
         <template v-if="busy">
           <Loading />
         </template>
@@ -67,15 +59,15 @@
 </template>
 
 <script setup>
-import PlayList from '@/components/PlayList.vue'
-import Loading from '@/components/Loading.vue'
-
 import { onMounted, getCurrentInstance, reactive, toRefs, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import PlayList from '@/components/playlist/PlayList.vue'
+import Loading from '@/components/Loading.vue'
 
 const { proxy } = getCurrentInstance()
 const route = useRoute()
 const router = useRouter()
+
 const cat = route.query.cat
 const info = reactive({
   sub: [],
@@ -83,7 +75,7 @@ const info = reactive({
   curType: '全部歌单',
   moreTxt: {},
   allList: {
-    name: '全部歌单'
+    name: '全部歌单',
   },
   playlist_list: [],
   playlist_count: 24,
@@ -93,8 +85,8 @@ const info = reactive({
     order: 'hot',
     cat: cat,
     limit: 48,
-    offset: 0
-  }
+    offset: 0,
+  },
 })
 const {
   sub,
@@ -106,7 +98,7 @@ const {
   playlist_count,
   playlist_loading,
   busy,
-  params
+  params,
 } = toRefs(info)
 
 const getCatlist = async () => {
@@ -149,8 +141,7 @@ const getPlayList = async (params) => {
     return proxy.$msg.error('数据请求失败')
   }
 
-  info.playlist_list =
-    info.params.offset !== 0 ? [...info.playlist_list, ...res.playlists] : res.playlists
+  info.playlist_list = info.params.offset !== 0 ? [...info.playlist_list, ...res.playlists] : res.playlists
   info.busy = info.playlist_list.length >= res.total
   info.playlist_loading = false
 }
@@ -201,7 +192,7 @@ watch(
     getPlayList(newVal)
   },
   {
-    deep: true // 深度监听
+    deep: true, // 深度监听
   }
 )
 

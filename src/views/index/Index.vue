@@ -35,7 +35,7 @@
     </div>
 
     <div class="top_list">
-      <RankList></RankList>
+      <RankList />
     </div>
 
     <div class="mv_list">
@@ -50,7 +50,7 @@
         >
       </div>
       <div class="wrapper">
-        <MvList :mvList="mv_list" :loading="mv_loading" :num="mv_count"></MvList>
+        <MvList :mvList="mv_list" :loading="mv_loading" :num="mv_count" />
       </div>
     </div>
 
@@ -59,33 +59,34 @@
         <div class="h_title">
           <h3>热门电台</h3>
         </div>
-        <DjList></DjList>
+        <DjList />
       </div>
       <div class="artist-list">
         <div class="h_title">
           <h3>热门歌手</h3>
         </div>
-        <ArtistList></ArtistList>
+        <ArtistList />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import Banners from '@/views/index/Banner.vue'
-import PlayList from '@/components/PlayList.vue'
-import AlbumList from '../../components/AlbumList.vue'
-import RankList from '@/views/index/RankList.vue'
-import MvList from '@/components/MvList.vue'
-import DjList from '@/views/index/DjList.vue'
-import ArtistList from '@/views/index/ArtistList.vue'
+import Banners from './components/Banner.vue'
+import PlayList from '@/components/playlist/PlayList.vue'
+import AlbumList from '@/components/album/AlbumList.vue'
+import RankList from './components/RankList.vue'
+import MvList from '@/components/mv/MvList.vue'
+import DjList from '@/components/dj/DjList.vue'
+import ArtistList from '@/components/artist/ArtistList.vue'
 
 import useHotRecom from '@/composables/useHotRecom'
 import useNewAlbum from '@/composables/useNewAlbum.js'
 import useNewMv from '@/composables/useNewMv.js'
 
 // -------------- 推荐歌单
-const { playlist_tags, playlist_list, playlist_index, playlist_count, playlist_loading, choosePlayListType } = useHotRecom()
+const { playlist_tags, playlist_list, playlist_index, playlist_count, playlist_loading, choosePlayListType } =
+  useHotRecom()
 
 // -------------- 新碟
 const { album_area, album_list, album_index, album_count, album_loading, chooseAlbumType } = useNewAlbum()

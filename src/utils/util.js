@@ -24,6 +24,19 @@ export default {
     })
     return ret
   },
+  // 歌曲转毫秒格式化处理 03:30 => (3*60+30) * 1000
+  formatSongSecond(duration) {
+    let arr = duration.split(':'),
+      second = 0
+
+    for (let i = 0; i < arr.length; i++) {
+      second += arr[i] * 60 * (arr.length - 1 - i)
+    }
+
+    second += arr[arr.length - 1] * 1
+
+    return second
+  },
   // 歌曲毫秒格式化处理 03:30
   formatSongTime(duration = 0) {
     duration = duration >= 0 ? duration / 1000 : 0
@@ -72,7 +85,7 @@ export default {
       dd: (dt.getDate() + '').padStart(2, '0'),
       HH: (dt.getHours() + '').padStart(2, '0'),
       mm: (dt.getMinutes() + '').padStart(2, '0'),
-      ss: (dt.getSeconds() + '').padStart(2, '0')
+      ss: (dt.getSeconds() + '').padStart(2, '0'),
     }
 
     for (const k in opt) {
@@ -92,5 +105,5 @@ export default {
       ;[arr[i], arr[j]] = [arr[j], arr[i]]
     }
     return arr.slice(0, num)
-  }
+  },
 }

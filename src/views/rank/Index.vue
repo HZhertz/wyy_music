@@ -32,16 +32,13 @@
             </div>
             <div class="cover-digital">
               <span class="cover-playCount"
-                ><i class="iconfont icon-playnum"></i>
-                {{ $utils.formartNum(rankInfo.playCount) }}次</span
+                ><i class="iconfont icon-playnum"></i> {{ $utils.formartNum(rankInfo.playCount) }}次</span
               >
               <span class="cover-collect"
-                ><i class="iconfont icon-collect"></i>
-                {{ $utils.formartNum(rankInfo.subscribedCount) }}</span
+                ><i class="iconfont icon-collect"></i> {{ $utils.formartNum(rankInfo.subscribedCount) }}</span
               >
               <span class="cover-comment"
-                ><i class="iconfont icon-comment"></i>
-                {{ $utils.formartNum(rankInfo.commentCount) }}</span
+                ><i class="iconfont icon-comment"></i> {{ $utils.formartNum(rankInfo.commentCount) }}</span
               >
             </div>
             <div class="cover-desc">
@@ -58,34 +55,26 @@
             <span class="play-all" @click="playAllSongs"
               ><i class="iconfont icon-audio-play"></i> 播放全部</span
             >
-            <span
-              :class="['collect', rankInfo.subscribed ? 'active' : '']"
-              @click="subPlayList(rankInfo)"
-              ><i
-                :class="['iconfont', 'icon-collect' + (rankInfo.subscribed ? '-active' : '')]"
-              ></i>
+            <span :class="['collect', rankInfo.subscribed ? 'active' : '']" @click="subPlayList(rankInfo)"
+              ><i :class="['iconfont', 'icon-collect' + (rankInfo.subscribed ? '-active' : '')]"></i>
               {{ rankInfo.subscribed ? '已收藏' : '收藏' }}</span
             >
           </div>
           <template v-if="isLoading">
-            <Loading></Loading>
+            <Loading />
           </template>
           <template v-else>
-            <SongList :songList="songList" :stripe="true"></SongList>
+            <SongList :songList="songList" :stripe="true" />
           </template>
         </div>
       </div>
       <div class="rank-aside">
         <div class="aside-menu">
-          <span :class="type === 'Top' ? 'active' : ''" @click="selectType('Top')"
-            ><em>TOP榜</em></span
-          >
+          <span :class="type === 'Top' ? 'active' : ''" @click="selectType('Top')"><em>TOP榜</em></span>
           <span :class="type === 'Feature' ? 'active' : ''" @click="selectType('Feature')"
             ><em>特色榜</em></span
           >
-          <span :class="type === 'Other' ? 'active' : ''" @click="selectType('Other')"
-            ><em>场景榜</em></span
-          >
+          <span :class="type === 'Other' ? 'active' : ''" @click="selectType('Other')"><em>场景榜</em></span>
         </div>
         <div class="type-main">
           <div
@@ -116,16 +105,17 @@
 </template>
 
 <script setup>
-import SongList from '@/components/SongList.vue'
-import Loading from '@/components/Loading.vue'
 import { getCurrentInstance, reactive, onMounted, toRefs, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import SongList from '@/components/SongList.vue'
+import Loading from '@/components/Loading.vue'
 
 const { proxy } = getCurrentInstance()
 const route = useRoute()
 const router = useRouter()
 const store = useStore()
+
 const info = reactive({
   list: [],
   type: 'Top',
@@ -136,7 +126,7 @@ const info = reactive({
   rankInfo: {},
   songList: [],
   total: 0,
-  isLoading: true
+  isLoading: true,
 })
 const { list, type, listTop, listFeature, listOther, rId, rankInfo, songList, total, isLoading } =
   toRefs(info)
@@ -203,7 +193,7 @@ const selectItem = (item) => {
 
 const playAllSongs = () => {
   store.dispatch('playAll', {
-    list: songList.value
+    list: songList.value,
   })
   store.commit('SET_PLAYLISTTIPS', true)
 }
@@ -533,11 +523,7 @@ const playAllSongs = () => {
   &.active {
     opacity: 1;
     background: -moz-linear-gradient(-45deg, #ffffff 20%, #ffb08e 100%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(
-      -45deg,
-      #ffffff 20%,
-      #ffb08e 100%
-    ); /* Chrome10-25,Safari5.1-6 */
+    background: -webkit-linear-gradient(-45deg, #ffffff 20%, #ffb08e 100%); /* Chrome10-25,Safari5.1-6 */
     background: linear-gradient(
       135deg,
       #ffffff 20%,

@@ -10,18 +10,18 @@
 </template>
 <script setup>
 import Loading from '@/components/Loading.vue'
-import ArtistItem from '@/components/ArtistItem.vue'
+import ArtistItem from '@/components/artist/ArtistItem.vue'
 
 const props = defineProps({
   list: {
     // 歌手信息
     type: Array,
-    required: true
+    required: true,
   },
   loading: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 </script>
 

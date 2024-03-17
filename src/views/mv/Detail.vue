@@ -64,16 +64,17 @@
 </template>
 
 <script setup>
-import CommentList from '@/components/Comments.vue'
 import { getCurrentInstance, onMounted, reactive, toRefs } from 'vue'
 import { useStore } from 'vuex'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import 'vue3-video-play/dist/style.css'
 import { videoPlay } from 'vue3-video-play'
+import CommentList from '@/components/Comments.vue'
 
 const { proxy } = getCurrentInstance()
 const route = useRoute()
 const store = useStore()
+
 const info = reactive({
   mId: '0',
   mvDetail: {},

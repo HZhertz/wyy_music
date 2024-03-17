@@ -60,37 +60,26 @@
           </div>
         </div>
         <div class="search-list" v-if="total || loading">
-          <SongList
-            :songList="list"
-            :stripe="true"
-            :offset="offset"
-            :pageSize="limit"
-            v-if="type == '1'"
-          ></SongList>
+          <SongList :songList="list" :stripe="true" :offset="offset" :pageSize="limit" v-if="type == '1'" />
           <AlbumList
             class="albums"
             :albumList="list"
             :loading="loading"
             :num="limit"
             v-else-if="type == '10'"
-          ></AlbumList>
-          <SearchArtist :list="list" :loading="loading" v-else-if="type == '100'"></SearchArtist>
+          />
+          <SearchArtist :list="list" :loading="loading" v-else-if="type == '100'" />
           <PlayList
             class="play"
             :playList="list"
             :loading="loading"
             :num="limit"
             v-else-if="type === '1000'"
-          ></PlayList>
-          <MvList
-            :mvList="list"
-            :loading="loading"
-            :num="limit"
-            v-else-if="type === '1004'"
-          ></MvList>
+          />
+          <MvList :mvList="list" :loading="loading" :num="limit" v-else-if="type === '1004'" />
         </div>
         <template v-else>
-          <Empty></Empty>
+          <Empty />
         </template>
         <div class="pagination" v-show="total > limit">
           <el-pagination
@@ -107,14 +96,14 @@
   </div>
 </template>
 <script setup>
-import SongList from '@/components/SongList.vue'
-import AlbumList from '@/components/AlbumList.vue'
-import PlayList from '@/components/PlayList.vue'
-import MvList from '@/components/MvList.vue'
-import Empty from '@/components/Empty.vue'
-import SearchArtist from '@/views/search/artist.vue'
 import { getCurrentInstance, onMounted, reactive, toRefs } from 'vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
+import SongList from '@/components/SongList.vue'
+import AlbumList from '@/components/album/AlbumList.vue'
+import PlayList from '@/components/playlist/PlayList.vue'
+import MvList from '@/components/mv/MvList.vue'
+import Empty from '@/components/Empty.vue'
+import SearchArtist from './artist.vue'
 import { formatSongInfo } from '@/utils/song.js'
 
 const route = useRoute()
@@ -129,7 +118,7 @@ const info = reactive({
     { k: 100, v: '歌手', t: '个歌手' },
     { k: 1000, v: '歌单', t: '个歌单' },
     // {k: 1002, v: '用户', t: '个用户'},
-    { k: 1004, v: 'MV', t: '个MV' }
+    { k: 1004, v: 'MV', t: '个MV' },
     // {k: 1014, v: '视频', t: '个视频'},
     // {k: 1018, v: '综合', t: '个'}
   ],
@@ -144,9 +133,9 @@ const info = reactive({
     songs: '单曲',
     artists: '歌手',
     albums: '专辑',
-    playlists: '歌单'
+    playlists: '歌单',
   },
-  suggestInfo: []
+  suggestInfo: [],
 })
 const {
   keyVal,
@@ -160,7 +149,7 @@ const {
   currentpage,
   loading,
   listType,
-  suggestInfo
+  suggestInfo,
 } = toRefs(info)
 
 const remoteMethod = (query) => {
@@ -192,7 +181,7 @@ const getSerachMatch = async () => {
     keywords: info.keyVal,
     type: info.type,
     limit: info.limit,
-    offset: info.offset
+    offset: info.offset,
   })
 
   if (res.code !== 200) {
@@ -250,7 +239,7 @@ const getSerachSuggest = async () => {
     info.suggestInfo = res.result.order.map((item) => {
       return {
         label: item,
-        info: res.result[item]
+        info: res.result[item],
       }
     })
   }

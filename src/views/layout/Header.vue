@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <div class="menu"></div>
-    <Search></Search>
+    <Search />
     <div :class="isLogin ? 'user-avatar' : 'login'">
       <div class="logined" v-if="isLogin">
         <el-image :src="userInfo.avatarUrl" class="avatar">
@@ -18,7 +18,7 @@
   </header>
 </template>
 <script setup>
-import Search from '@/components/Search.vue'
+import Search from './components/Search.vue'
 import { computed, getCurrentInstance } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'

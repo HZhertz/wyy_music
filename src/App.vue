@@ -1,20 +1,22 @@
 <template>
   <el-container>
     <el-aside>
-      <Sidebar></Sidebar>
+      <Sidebar />
     </el-aside>
     <el-main>
-      <Header></Header>
+      <Header />
       <router-view></router-view>
     </el-main>
     <Login v-show="loginDialogVisible" />
+    <PlayBar />
   </el-container>
 </template>
 
 <script setup>
-import Sidebar from '@/components/Sidebar.vue'
-import Header from '@/components/Header.vue'
-import Login from '@/components/Login.vue'
+import Sidebar from '@/views/layout/Sidebar.vue'
+import Header from '@/views/layout/Header.vue'
+import Login from '@/views/layout/Login.vue'
+import PlayBar from '@/views/layout/PlayBar.vue'
 
 import { computed } from 'vue'
 import { useStore } from 'vuex'

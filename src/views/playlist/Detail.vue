@@ -165,14 +165,15 @@
 
 <script setup>
 import { getCurrentInstance, reactive, toRefs, computed, onMounted } from 'vue'
-import Loading from '@/components/Loading.vue'
-import SongList from '@/components/SongList.vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import Loading from '@/components/Loading.vue'
+import SongList from '@/components/SongList.vue'
 
 const { proxy } = getCurrentInstance()
 const route = useRoute()
 const store = useStore()
+
 const info = reactive({
   id: '',
   details: {},

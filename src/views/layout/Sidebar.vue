@@ -14,36 +14,36 @@
   </div>
 </template>
 <script setup>
-import { useRoute, useRouter } from 'vue-router'
 import { reactive, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()
 const menuList = reactive([
   {
     name: '首页',
-    path: 'index'
+    path: 'index',
   },
   {
     name: '排行榜',
-    path: 'rank'
+    path: 'rank',
   },
   {
     name: '歌单',
-    path: 'playlist'
+    path: 'playlist',
   },
   {
     name: 'MV',
-    path: 'mvlist'
+    path: 'mv',
   },
   {
     name: '歌手',
-    path: 'artist'
+    path: 'artist',
   },
   {
     name: '我的音乐',
-    path: 'my'
-  }
+    path: 'my',
+  },
 ])
 // 当前选择菜单
 const menuActive = computed(() => route.path)
@@ -51,7 +51,7 @@ const menuActive = computed(() => route.path)
 // 切换导航跳转
 const selectMenu = (item) => {
   router.push({
-    path: '/' + item
+    path: '/' + item,
   })
 }
 </script>

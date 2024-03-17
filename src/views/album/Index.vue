@@ -24,7 +24,9 @@
                 >{{ k !== 0 ? ' / ' + author.name : author.name }}</router-link
               >
             </div>
-            <div class="album-time">发行时间：{{ $utils.formartDate(details.publishTime, 'yyyy-MM-dd') }}</div>
+            <div class="album-time">
+              发行时间：{{ $utils.formartDate(details.publishTime, 'yyyy-MM-dd') }}
+            </div>
             <div class="album-company">发行公司：{{ details.company }}</div>
             <div class="album-desc" v-if="details.description">
               <h5>
@@ -45,16 +47,18 @@
             <h4>
               包含歌曲列表 <em>{{ details.size + '首歌' }}</em>
             </h4>
-            <span class="play-all" @click="playAllSongs"><i class="iconfont icon-audio-play"></i> 播放全部</span>
+            <span class="play-all" @click="playAllSongs"
+              ><i class="iconfont icon-audio-play"></i> 播放全部</span
+            >
             <span :class="['collect', dynamic.isSub ? 'active' : '']" @click="subAlbum"
               ><i :class="['iconfont', 'icon-collect' + (dynamic.isSub ? '-active' : '')]"></i>
               {{ dynamic.isSub ? '已收藏' : '收藏' }}</span
             >
           </div>
-          <song-list :songList="songList" :stripe="true"></song-list>
+          <SongList :songList="songList" :stripe="true" />
         </div>
         <div class="album-comments" ref="comment">
-          <comment-list :type="type" :sId="albumId"></comment-list>
+          <CommentList :type="type" :sId="albumId" />
         </div>
       </div>
       <div class="aside-box">
@@ -111,15 +115,16 @@
 </template>
 
 <script setup>
-import SongList from '@/components/SongList.vue'
-import CommentList from '@/components/Comments.vue'
 import { getCurrentInstance, onMounted, computed, reactive, toRefs } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
+import SongList from '@/components/SongList.vue'
+import CommentList from '@/components/Comments.vue'
 
 const { proxy } = getCurrentInstance()
 const store = useStore()
 const route = useRoute()
+
 const info = reactive({
   // 歌单详情
   albumId: '',

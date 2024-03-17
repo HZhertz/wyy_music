@@ -27,9 +27,11 @@
               </p>
               <p class="song-related">
                 <span
-                  >专辑：<router-link class="song-album" :to="{ path: '/album', query: { id: songInfo.album.id } }">{{
-                    songInfo.album.name
-                  }}</router-link></span
+                  >专辑：<router-link
+                    class="song-album"
+                    :to="{ path: '/album', query: { id: songInfo.album.id } }"
+                    >{{ songInfo.album.name }}</router-link
+                  ></span
                 >
                 <span
                   >发行时间：<em>{{ songInfo.publishTime }}</em></span
@@ -43,7 +45,8 @@
             <div class="info-bottom">
               <div class="song-oper">
                 <span :class="['play-btn', 'play-all', songDisable]" @click="playing(songInfo)"
-                  ><i :class="['iconfont', playFontIcon]"></i> {{ songInfo.vip ? 'VIP尊享' : '立即播放' }}</span
+                  ><i :class="['iconfont', playFontIcon]"></i>
+                  {{ songInfo.vip ? 'VIP尊享' : '立即播放' }}</span
                 >
                 <span class="play-btn play-collect" @click="showAddList"
                   ><i class="iconfont icon-collect"></i> 收藏</span
@@ -83,11 +86,11 @@
         </div>
         <div class="song-lyric">
           <h5>歌词</h5>
-          <Lyrics :sId="sId" maxH="530"></Lyrics>
+          <Lyrics :sId="sId" maxH="530" />
         </div>
       </div>
       <div class="song-comments" ref="cBox">
-        <comment-list :type="commentType" :sId="sId"></comment-list>
+        <CommentList :type="commentType" :sId="sId"></CommentList>
       </div>
     </div>
     <div class="aside-box">
@@ -136,17 +139,17 @@
 </template>
 
 <script setup>
-import Lyrics from '@/components/Lyrics.vue'
-import CommentList from '@/components/Comments.vue'
-
 import { getCurrentInstance, reactive, toRefs, onMounted, computed, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
+import Lyrics from '@/components/song/Lyrics.vue'
+import CommentList from '@/components/Comments.vue'
 import { formatSongInfo } from '@/utils/song.js'
 
 const { proxy } = getCurrentInstance()
 const store = useStore()
 const route = useRoute()
+
 const info = reactive({
   songInfo: null,
   sId: 0, // 歌曲的ID

@@ -57,11 +57,12 @@
 
 <script setup>
 import { onMounted, getCurrentInstance, watchEffect, reactive, toRefs } from 'vue'
-import MvList from '@/components/MvList.vue'
+import MvList from '@/components/mv/MvList.vue'
 import Loading from '@/components/Loading.vue'
 import { MV_AREA, MV_TYPE } from '@/assets/js/common.js'
 
 const { proxy } = getCurrentInstance()
+
 const info = reactive({
   area: MV_AREA,
   type: MV_TYPE,
@@ -74,13 +75,13 @@ const info = reactive({
     type: '',
     order: '',
     limit: 30,
-    offset: 0
+    offset: 0,
   },
   list: [],
   mv_count: 20,
   mv_loading: true,
   isLoading: true,
-  isLoadMv: true
+  isLoadMv: true,
 })
 const {
   area,
@@ -94,7 +95,7 @@ const {
   mv_count,
   mv_loading,
   isLoading,
-  isLoadMv
+  isLoadMv,
 } = toRefs(info)
 
 onMounted(() => {

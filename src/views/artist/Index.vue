@@ -9,10 +9,10 @@
           infinite-scroll-distance="100"
         >
           <template v-for="item in list">
-            <ArtistItem :item="item"></ArtistItem>
+            <ArtistItem :item="item" />
           </template>
           <template v-if="isLoading">
-            <Loading></Loading>
+            <Loading />
           </template>
         </div>
       </div>
@@ -56,17 +56,18 @@
 </template>
 
 <script setup>
-import Loading from '@/components/Loading.vue'
-import ArtistItem from '@/components/ArtistItem.vue'
 import { onMounted, getCurrentInstance, watchEffect, reactive, toRefs } from '@vue/runtime-core'
+import Loading from '@/components/Loading.vue'
+import ArtistItem from '@/components/artist/ArtistItem.vue'
 
 const { proxy } = getCurrentInstance()
+
 const info = reactive({
   type: [
     { label: '全部', val: -1 },
     { label: '男歌手', val: 1 },
     { label: '女歌手', val: 2 },
-    { label: '乐队', val: 3 }
+    { label: '乐队', val: 3 },
   ],
   area: [
     { label: '全部', val: -1 },
@@ -74,11 +75,11 @@ const info = reactive({
     { label: '欧美', val: 96 },
     { label: '日本', val: 8 },
     { label: '韩国', val: 16 },
-    { label: '其他', val: 0 }
+    { label: '其他', val: 0 },
   ],
   initial: [
     { label: '热门', val: -1 },
-    { label: '#', val: 0 }
+    { label: '#', val: 0 },
   ],
   typeIndex: 0,
   areaIndex: 0,
@@ -88,11 +89,11 @@ const info = reactive({
     type: '',
     initial: '',
     limit: 30,
-    offset: 0
+    offset: 0,
   },
   list: [],
   isLoading: true,
-  busy: true
+  busy: true,
 })
 const { type, area, initial, typeIndex, areaIndex, initialIndex, params, list, isLoading, busy } =
   toRefs(info)
@@ -102,7 +103,7 @@ const renderInitial = () => {
   for (let i = 0; i < 26; i++) {
     alphabet.push({
       label: String.fromCharCode(65 + i),
-      val: String.fromCharCode(97 + i)
+      val: String.fromCharCode(97 + i),
     })
   }
   info.initial = [info.initial[0], ...alphabet, info.initial[1]]
@@ -202,11 +203,7 @@ const loadMore = () => {
       border-radius: 60px 12px 12px 60px;
       transition: all 0.3s ease-in-out;
       background: -moz-linear-gradient(-45deg, #ffffff 20%, #ffb08e 100%); /* FF3.6-15 */
-      background: -webkit-linear-gradient(
-        -45deg,
-        #ffffff 20%,
-        #ffb08e 100%
-      ); /* Chrome10-25,Safari5.1-6 */
+      background: -webkit-linear-gradient(-45deg, #ffffff 20%, #ffb08e 100%); /* Chrome10-25,Safari5.1-6 */
       background: linear-gradient(
         135deg,
         #ffffff 20%,

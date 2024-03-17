@@ -86,12 +86,13 @@
 import { getCurrentInstance, onMounted, reactive, toRefs } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import SongList from '@/components/SongList.vue'
-import AlbumList from '@/components/AlbumList.vue'
-import MvList from '@/components/MvList.vue'
-import ArtistDesc from './ArtistDesc.vue'
+import AlbumList from '@/components/album/AlbumList.vue'
+import MvList from '@/components/mv/MvList.vue'
+import ArtistDesc from './components/ArtistDesc.vue'
 
 const { proxy } = getCurrentInstance()
 const route = useRoute()
+
 const info = reactive({
   sId: '',
   artistName: '',

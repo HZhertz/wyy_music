@@ -35,21 +35,20 @@ const handleClose = () => store.commit('SET_LOGINDIALOG', false)
 const formInfo = reactive({
   loginForm: {
     phone: '',
-    pwd: ''
+    pwd: '',
   },
   loginFormRules: {
     phone: [{ required: true, message: '请输入网易帐号', trigger: 'blur' }],
-    pwd: [{ required: true, message: '请输入网易密码', trigger: 'blur' }]
-  }
+    pwd: [{ required: true, message: '请输入网易密码', trigger: 'blur' }],
+  },
 })
 const { loginForm, loginFormRules } = toRefs(formInfo)
 
+const loginFormRef = ref(null)
 const submitForm = () => {
-  proxy.$refs.loginFormRef.validate(async (valid) => {
+  loginFormRef.validate(async (valid) => {
     if (valid) {
       const { data: res } = await proxy.$http.login(formInfo['loginForm'])
-      console.log('loginResponse:', res)
-
       if (res.code !== 200) {
         proxy.$msg.error(res.msg)
       } else {
@@ -64,7 +63,6 @@ const submitForm = () => {
 
 const getUserInfo = async (uid) => {
   const { data: res } = await proxy.$http.getUserInfo({ uid: uid })
-  console.log('getUSerInfoResponse:', res)
   if (res.code !== 200) {
     proxy.$msg.error(res.msg)
   } else {
