@@ -2,14 +2,11 @@
   <div class="banner">
     <el-skeleton :loading="loading" animated>
       <template #template>
-        <el-skeleton-item class="skeleton-img" variant="image" />
-        <el-skeleton-item class="skeleton-img" variant="image" />
-        <el-skeleton-item class="skeleton-img" variant="image" />
-        <el-skeleton-item class="skeleton-img" variant="image" />
+        <el-skeleton-item class="skeleton-img" variant="image" v-for="item in slidesPerView" />
       </template>
       <template #default>
-        <swiper
-          :slides-per-view="4"
+        <Swiper
+          :slides-per-view="slidesPerView"
           :space-between="30"
           :modules="modules"
           :autoplay="{ delay: 3000 }"
@@ -17,10 +14,11 @@
           v-if="lists"
           class="banner_wrap"
         >
-          <swiper-slide v-for="item of lists" :key="item.imageUrl">
+          <SwiperSlide v-for="item of lists" :key="item.imageUrl">
             <el-image
               :src="item.imageUrl"
               :alt="item.typeTitle"
+              fit="cover"
               class="banner_img"
               @click="pathHandler(item)"
             >
@@ -30,17 +28,16 @@
                 </div>
               </template>
             </el-image>
-          </swiper-slide>
-        </swiper>
+          </SwiperSlide>
+        </Swiper>
       </template>
     </el-skeleton>
   </div>
 </template>
 
 <script setup>
-import { getCurrentInstance, onMounted, ref } from 'vue'
+import { getCurrentInstance, onMounted, ref, onUnmounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
-
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
 import { Pagination, Autoplay } from 'swiper/modules'
@@ -52,10 +49,6 @@ const modules = [Autoplay, Pagination]
 
 let lists = ref([])
 let loading = ref(true)
-
-onMounted(() => {
-  getBanner()
-})
 
 const getBanner = async () => {
   try {
@@ -84,37 +77,51 @@ const pathHandler = (params) => {
       router.push({ path: '/playlist', query: { id: params.targetId } })
       break
     case 1004: // MV
-      router.push({ path: '/mvlist/mv', query: { id: params.targetId } })
+      router.push({ path: '/mv/detail', query: { id: params.targetId } })
       break
     case 3000: // 外链
       window.open(params.url, '_blank')
       break
   }
 }
+
+const viewportWidth = ref(window.innerWidth)
+const updateViewportWidth = () => {
+  viewportWidth.value = window.innerWidth
+}
+onMounted(() => {
+  getBanner()
+  window.addEventListener('resize', updateViewportWidth)
+})
+onUnmounted(() => {
+  window.removeEventListener('resize', updateViewportWidth)
+})
+const slidesPerView = computed(() => {
+  if (viewportWidth.value > 1400) {
+    return 4
+  }
+  if (viewportWidth.value > 1100 && viewportWidth.value < 1400) {
+    return 3
+  }
+  if (viewportWidth.value < 1100) {
+    return 2
+  }
+})
 </script>
 
 <style lang="less" scoped>
-// 轮播图的宽度
-@w: calc((@mainWidth - 90px) / 4);
-
 .banner {
   padding-bottom: 30px;
 }
 .banner_wrap {
-  position: relative;
   padding: 40px 0;
-  .calcHeight(@w, 1080, 400);
-  font-size: 0;
+  min-width: 640px;
 
   .banner_img {
-    width: 100%;
-    height: 100%;
     cursor: pointer;
   }
-
-  .swiper-slide,
   .el-image {
-    .calcHeight(@w, 1080, 400);
+    height: 100%;
   }
 }
 
@@ -125,7 +132,6 @@ const pathHandler = (params) => {
 
   .skeleton-img {
     flex: 1;
-    .calcHeight(@w, 1080, 400);
     margin-right: 30px;
 
     &:last-child {
@@ -134,9 +140,8 @@ const pathHandler = (params) => {
   }
 }
 .swiper {
-  // opacity: .1;
-
   .swiper-slide {
+    height: 105px;
     border-radius: 12px;
     box-shadow: 0 20px 27px rgb(0 0 0 / 5%);
     overflow: hidden;

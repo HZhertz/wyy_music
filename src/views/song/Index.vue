@@ -9,7 +9,7 @@
                 {{ songInfo.name }}
                 <router-link
                   class="mv-name"
-                  :to="{ path: '/mvlist/mv', query: { id: songInfo.mvId } }"
+                  :to="{ path: '/mv/detail', query: { id: songInfo.mvId } }"
                   v-if="songInfo.mvId"
                 >
                   <i class="iconfont icon-mvlist"></i>
@@ -18,7 +18,7 @@
               </h3>
               <p>
                 <router-link
-                  :to="{ path: '/singer', query: { id: author.id } }"
+                  :to="{ path: '/artist/detail', query: { id: author.id } }"
                   class="song-author"
                   v-for="(author, k) in songInfo.singer"
                   :key="author.name"
@@ -67,7 +67,7 @@
                   </router-link>
                   <div class="simi-author">
                     <router-link
-                      :to="{ path: '/singer', query: { id: author.id } }"
+                      :to="{ path: '/artist/detail', query: { id: author.id } }"
                       class="song-author"
                       v-for="(author, k) in simiItem.singer"
                       :key="author.name"

@@ -19,11 +19,9 @@
       <div class="wrapper">
         <div v-for="item in top_list" :key="item.id" class="toplist_item">
           <div class="toplist_hd">
-            <router-link
-              :to="{ path: '/rank', query: { rId: item.id, type: 'Top' } }"
-              class="toplist_name"
-              >{{ item.name }}</router-link
-            >
+            <router-link :to="{ path: '/rank', query: { rId: item.id, type: 'Top' } }" class="toplist_name">{{
+              item.name
+            }}</router-link>
             <h5 class="toplist_update">
               最近更新：{{ $utils.formartDate(item.updateTime, 'MM月dd日')
               }}<span>（{{ item.updateFrequency }}）</span>
@@ -44,14 +42,12 @@
                 </el-image>
               </div>
               <div class="songinfo">
-                <router-link
-                  :to="{ path: '/song', query: { id: songItem.id } }"
-                  class="song_title"
-                  >{{ songItem.name }}</router-link
-                >
+                <router-link :to="{ path: '/song', query: { id: songItem.id } }" class="song_title">{{
+                  songItem.name
+                }}</router-link>
                 <div class="song_author">
                   <router-link
-                    :to="{ path: '/singer', query: { id: author.id } }"
+                    :to="{ path: '/artist/detail', query: { id: author.id } }"
                     class="song_name"
                     v-for="(author, k) in songItem.singer"
                     :key="k"
@@ -80,7 +76,7 @@ const info = reactive({
   top_list: [],
   songList: {},
   num: 6,
-  loading: true
+  loading: true,
 })
 const { top_list, songList, num, loading } = toRefs(info)
 

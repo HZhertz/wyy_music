@@ -65,7 +65,7 @@
         <div class="simi-artist-box">
           <router-link
             class="simi-artist-item"
-            :to="{ path: '/singer', query: { id: item.id } }"
+            :to="{ path: '/artist/detail', query: { id: item.id } }"
             v-for="item in simiArtist"
           >
             <div class="faceImg">

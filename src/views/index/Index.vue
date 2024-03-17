@@ -1,17 +1,18 @@
 <template>
-  <div class="home">
+  <div class="index">
     <Banners />
-
     <div class="hot-list">
       <div class="h_title">
         <h3>热门推荐</h3>
-        <span
-          v-for="(item, index) in playlist_tags"
-          :key="item.id"
-          :class="index == playlist_index ? 'active' : ''"
-          @click="choosePlayListType(index)"
-          >{{ item.name }}</span
-        >
+        <div class="tag-box">
+          <span
+            v-for="(item, index) in playlist_tags"
+            :key="item.id"
+            :class="index == playlist_index ? 'active' : ''"
+            @click="choosePlayListType(index)"
+            >{{ item.name }}</span
+          >
+        </div>
       </div>
       <div class="wrapper">
         <PlayList :playList="playlist_list" :loading="playlist_loading" :num="playlist_count" />
@@ -21,13 +22,15 @@
     <div class="album_list">
       <div class="h_title">
         <h3>新碟上架</h3>
-        <span
-          v-for="(item, index) in album_area"
-          :key="item.id"
-          :class="index == album_index ? 'active' : ''"
-          @click="chooseAlbumType(index)"
-          >{{ item.name }}</span
-        >
+        <div class="tag-box">
+          <span
+            v-for="(item, index) in album_area"
+            :key="item.id"
+            :class="index == album_index ? 'active' : ''"
+            @click="chooseAlbumType(index)"
+            >{{ item.name }}</span
+          >
+        </div>
       </div>
       <div class="wrapper">
         <AlbumList :albumList="album_list" :loading="album_loading" :num="album_count" />
@@ -41,13 +44,15 @@
     <div class="mv_list">
       <div class="h_title">
         <h3>最新MV</h3>
-        <span
-          v-for="(item, index) in mv_area"
-          :key="item.id"
-          :class="index == mv_index ? 'active' : ''"
-          @click="chooseMvType(index)"
-          >{{ item }}</span
-        >
+        <div class="tag-box">
+          <span
+            v-for="(item, index) in mv_area"
+            :key="item.id"
+            :class="index == mv_index ? 'active' : ''"
+            @click="chooseMvType(index)"
+            >{{ item }}</span
+          >
+        </div>
       </div>
       <div class="wrapper">
         <MvList :mvList="mv_list" :loading="mv_loading" :num="mv_count" />
@@ -96,37 +101,42 @@ const { mv_area, mv_list, mv_index, mv_count, mv_loading, chooseMvType } = useNe
 </script>
 <style lang="less" scoped>
 .h_title {
+  display: flex;
   padding: 20px 0 10px;
 
   h3 {
     display: inline-block;
+    min-width: 80px;
     padding-right: 50px;
     font-size: 28px;
     font-weight: 700;
   }
 
-  span {
-    display: inline-block;
-    font-size: 16px;
-    margin: 0 40px 0 0;
-    color: var(--color-text-main);
-    cursor: pointer;
-
-    &.active {
-      position: relative;
-      z-index: 1;
-      font-weight: 600;
+  .tag-box {
+    min-width: 300px;
+    span {
+      display: inline-block;
+      font-size: 16px;
+      margin: 3px 40px 0 0;
       color: var(--color-text-main);
+      cursor: pointer;
 
-      &:after {
-        position: absolute;
-        content: '';
-        left: 0;
-        bottom: 1px;
-        width: 100%;
-        height: 6px;
-        background: var(--color-text-height);
-        z-index: -1;
+      &.active {
+        position: relative;
+        z-index: 1;
+        font-weight: 600;
+        color: var(--color-text-main);
+
+        &:after {
+          position: absolute;
+          content: '';
+          left: 0;
+          bottom: 1px;
+          width: 100%;
+          height: 6px;
+          background: var(--color-text-height);
+          z-index: -1;
+        }
       }
     }
   }

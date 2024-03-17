@@ -29,7 +29,7 @@
             <template v-if="typeSize !== 'mini'">
               <router-link
                 class="mv-name"
-                :to="{ path: '/mvlist/mv', query: { id: item.mvId } }"
+                :to="{ path: '/mv/detail', query: { id: item.mvId } }"
                 v-if="item.mvId"
               >
                 <i class="iconfont icon-mv"></i>
@@ -40,7 +40,7 @@
           <div class="columnSinger songlist-singer">
             <!--- 返回的数据里用户的uid有可能为0 --->
             <router-link
-              :to="{ path: '/singer', query: { id: author.id } }"
+              :to="{ path: '/artist/detail', query: { id: author.id } }"
               class="song_name"
               v-for="(author, k) in item.singer"
               :key="author.name"
@@ -292,7 +292,7 @@ const delList = (index) => {
 
 const isShowPagination = computed(() => {
   // return props.songList.length > pageSize.value && !props.isScroll
-	console.log(props.isShowPag && !props.isScroll);
+  console.log(props.isShowPag && !props.isScroll)
   return props.isShowPag && !props.isScroll
 })
 

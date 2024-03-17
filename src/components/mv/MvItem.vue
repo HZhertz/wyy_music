@@ -1,6 +1,6 @@
 <template>
   <div class="albumItem">
-    <router-link :to="{ path: '/mvlist/mv', query: { id: item.id } }" class="faceImg">
+    <router-link :to="{ path: '/mv/detail', query: { id: item.id } }" class="faceImg">
       <i class="iconfont icon-video-play"></i>
       <el-image :src="item.cover || item.imgurl" fit="cover">
         <div slot="placeholder" class="image-slot">
@@ -9,11 +9,18 @@
       </el-image>
     </router-link>
     <div class="info">
-      <router-link :to="{ path: '/mvlist/mv', query: { id: item.id } }" class="mv-name">{{ item.name }}</router-link>
-      <router-link :to="{ path: '/singer', query: { id: item.artistId } }" class="mv-author" v-if="!item.publishTime">{{
-        item.artistName
+      <router-link :to="{ path: '/mv/detail', query: { id: item.id } }" class="mv-name">{{
+        item.name
       }}</router-link>
-      <div class="mv-playCount"><i class="iconfont icon-mvlist"></i> {{ $utils.formartNum(item.playCount) }}</div>
+      <router-link
+        :to="{ path: '/artist/detail', query: { id: item.artistId } }"
+        class="mv-author"
+        v-if="!item.publishTime"
+        >{{ item.artistName }}</router-link
+      >
+      <div class="mv-playCount">
+        <i class="iconfont icon-mvlist"></i> {{ $utils.formartNum(item.playCount) }}
+      </div>
       <div class="mv-time" v-if="item.publishTime">发布时间：{{ item.publishTime }}</div>
     </div>
   </div>

@@ -77,8 +77,8 @@ const info = reactive({
     songs: '单曲',
     artists: '歌手',
     albums: '专辑',
-    playlists: '歌单'
-  }
+    playlists: '歌单',
+  },
 })
 const { keyVal, serachHot, suggestInfo, loading, listType } = toRefs(info)
 
@@ -137,7 +137,7 @@ const getSerachSuggest = async () => {
     suggestInfo.value = res.result.order.map((item) => {
       return {
         label: item,
-        info: res.result[item]
+        info: res.result[item],
       }
     })
     console.log('suggestInfo.value:', suggestInfo.value)
@@ -162,7 +162,7 @@ const jumpPage = (item, type) => {
       router.push({ path: '/song', query: { id: item.id } })
       break
     case 'artists':
-      router.push({ path: '/singer', query: { id: item.id } })
+      router.push({ path: '/artist/detail', query: { id: item.id } })
       break
     case 'albums':
       router.push({ path: '/album', query: { id: item.id } })

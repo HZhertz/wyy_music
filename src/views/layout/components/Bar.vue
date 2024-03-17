@@ -34,7 +34,7 @@
             }}</router-link>
             <p>
               <router-link
-                :to="{ path: '/singer', query: { id: author.id } }"
+                :to="{ path: '/artist/detail', query: { id: author.id } }"
                 class="song_author"
                 v-for="(author, k) in curSongInfo.singer"
                 :key="author.name"

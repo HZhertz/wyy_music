@@ -252,7 +252,7 @@ const jumpPage = (item, type) => {
       router.push({ path: '/song', query: { id: item.id } })
       break
     case 'artists':
-      router.push({ path: '/singer', query: { id: item.id } })
+      router.push({ path: '/artist/detail', query: { id: item.id } })
       break
     case 'albums':
       router.push({ path: '/album', query: { id: item.id } })
