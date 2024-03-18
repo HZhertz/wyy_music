@@ -75,12 +75,18 @@ const props = defineProps({
 .el-skeleton {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  font-size: 0;
-
+  justify-content: left;
+  box-sizing: border-box;
+  .item {
+    position: relative;
+    width: 150px;
+    padding: 20px;
+  }
   .ske-img {
-    width: 190px;
-    height: 190px;
+    width: 150px;
+    height: 150px;
+    z-index: 3;
+    border-radius: 4px;
   }
 
   .ske-info {

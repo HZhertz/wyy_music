@@ -34,7 +34,7 @@ const props = defineProps({
 <style lang="less" scoped>
 .albumItem {
   width: 180px;
-  margin: 10px;
+  margin: 8px;
   border-radius: 4px;
 
   &:hover {
@@ -53,6 +53,7 @@ const props = defineProps({
   display: block;
   position: relative;
   overflow: hidden;
+  border-radius: 4px;
 }
 
 .icon-video-play {

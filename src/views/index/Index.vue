@@ -33,7 +33,7 @@
         </div>
       </div>
       <div class="wrapper">
-        <AlbumList :albumList="album_list" :loading="album_loading" :num="album_count" />
+        <AlbumList :albumList="album_list" :loading="album_loading" :height="100" :total="album_count" />
       </div>
     </div>
 
@@ -55,7 +55,7 @@
         </div>
       </div>
       <div class="wrapper">
-        <MvList :mvList="mv_list" :loading="mv_loading" :num="mv_count" />
+        <MvList :mvList="mv_list" :loading="mv_loading" :total="mv_count" />
       </div>
     </div>
 
@@ -100,13 +100,16 @@ const { album_area, album_list, album_index, album_count, album_loading, chooseA
 const { mv_area, mv_list, mv_index, mv_count, mv_loading, chooseMvType } = useNewMv()
 </script>
 <style lang="less" scoped>
+.index {
+  margin-left: 20px;
+}
 .h_title {
   display: flex;
   padding: 20px 0 10px;
 
   h3 {
     display: inline-block;
-    min-width: 80px;
+    min-width: 70px;
     padding-right: 50px;
     font-size: 28px;
     font-weight: 700;
@@ -147,11 +150,16 @@ const { mv_area, mv_list, mv_index, mv_count, mv_loading, chooseMvType } = useNe
 .mv_list,
 .dj-list,
 .artist-list {
-  padding: 0 20px;
+  padding: 0 10px;
   margin-bottom: 25px;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 20px 27px rgb(0 0 0 / 5%);
+}
+
+.hot-list,
+.album_list,
+.mv_list {
   min-width: 640px;
 }
 

@@ -4,7 +4,7 @@
       <div class="singer-header">
         <div class="singer-avatar">
           <el-image :src="artistAvatar" class="avatar_img">
-            <template #error>
+            <template #placeholder>
               <div class="image-slot">
                 <i class="iconfont icon-placeholder"></i>
               </div>

@@ -82,9 +82,10 @@ const currentChange = (page) => {
   font-size: 0;
 
   .item {
-    flex: 30%;
-    max-width: calc(100% / 4 - 20px);
-    margin: 20px 10px 0;
+    // flex: 30%;
+    // max-width: calc(100% / 4 - 20px);
+    width: 180px;
+    margin: 0 5px;
     border-radius: 4px;
   }
 

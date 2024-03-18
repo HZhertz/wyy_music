@@ -1,19 +1,22 @@
 <template>
   <el-skeleton :loading="loading" animated :count="size" :throttle="500">
     <template #template>
-      <div class="item">
-        <el-skeleton-item class="ske-img" variant="image" />
+      <div class="item" :style="{ width: width + 'px' }">
+        <el-skeleton-item
+          class="ske-img"
+          variant="image"
+          :style="{ width: height + 'px', height: height + 'px' }"
+        />
         <div class="ske-info">
           <el-skeleton-item variant="h3" class="ske-name" />
           <el-skeleton-item variant="h3" class="ske-name" style="width: 50%" />
-          <el-skeleton-item variant="text" class="ske-txt" />
         </div>
       </div>
     </template>
     <template #default>
       <div class="album">
-        <div class="album-item" v-for="item in albumList">
-          <AlbumItem :item="item" :height="90" />
+        <div class="album_item" v-for="item in albumList">
+          <AlbumItem :item="item" :height="height" />
         </div>
       </div>
       <el-pagination
@@ -68,6 +71,10 @@ const emit = defineEmits(['update'])
 const currentChange = (page) => {
   emit('update', page)
 }
+
+const width = computed(() => {
+  return props.height * 2.8
+})
 </script>
 <style scoped lang="less">
 .album {
@@ -75,52 +82,37 @@ const currentChange = (page) => {
   flex-wrap: wrap;
   justify-content: left;
 
-  .album-item {
+  .album_item {
     margin: 4px 6px;
   }
 }
 
 .el-skeleton {
   display: flex;
-  width: auto;
   flex-wrap: wrap;
-  flex-direction: row;
   justify-content: left;
-  padding-bottom: 40px;
-  margin: 0 -10px;
-  font-size: 0;
 
   .item {
     display: flex;
-    flex: 25%;
-    max-width: calc(100% / 3 - 20px);
-    margin: 10px 5px 0;
-  }
+    // flex: 25%;
+    border-radius: 4%;
 
-  .ske-img {
-    display: block;
-    position: relative;
-    width: 120px;
-    height: 120px;
-    line-height: 150px;
-    text-align: center;
+    margin: 4px 6px;
   }
 
   .ske-info {
-    position: relative;
+    display: flex;
     flex: 1;
-    margin: 5% 0 0 10%;
+    flex-direction: column;
+    justify-content: space-evenly;
+    position: relative;
+    margin: 10px 0;
     overflow: hidden;
   }
 
   .ske-name {
-    margin: 5px 0;
-  }
-
-  .ske-txt {
-    display: block;
-    margin-top: 10px;
-    width: 10%;
+    // height: 10px;
+    margin: 5px;
   }
 }
 </style>

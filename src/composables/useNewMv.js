@@ -9,9 +9,9 @@ export default () => {
     mv_area: MV_AREA,
     mv_list: [],
     mv_index: 0,
-    mv_params: { limit: 10 },
-    mv_count: 10,
-    mv_loading: true
+    mv_params: { limit: 12 },
+    mv_count: 12,
+    mv_loading: true,
   })
 
   // 最新MV
@@ -40,6 +40,6 @@ export default () => {
 
   return {
     ...toRefs(mv_info),
-    chooseMvType
+    chooseMvType,
   }
 }
