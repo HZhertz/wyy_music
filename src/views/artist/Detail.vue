@@ -41,6 +41,7 @@
             :page="albumPage"
             :size="albumSize"
             :total="albumTotal"
+            :height="94"
             @update="updateAlbumList"
           />
         </el-tab-pane>

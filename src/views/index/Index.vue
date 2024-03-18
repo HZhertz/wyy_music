@@ -66,11 +66,11 @@
         </div>
         <DjList />
       </div>
-      <div class="artist-list">
+      <div class="hot_artist">
         <div class="h_title">
           <h3>热门歌手</h3>
         </div>
-        <ArtistList />
+        <HotArtist />
       </div>
     </div>
   </div>
@@ -83,7 +83,7 @@ import AlbumList from '@/components/album/AlbumList.vue'
 import RankList from './components/RankList.vue'
 import MvList from '@/components/mv/MvList.vue'
 import DjList from '@/components/dj/DjList.vue'
-import ArtistList from '@/components/artist/ArtistList.vue'
+import HotArtist from './components/HotArtist.vue'
 
 import useHotRecom from '@/composables/useHotRecom'
 import useNewAlbum from '@/composables/useNewAlbum.js'
@@ -149,7 +149,7 @@ const { mv_area, mv_list, mv_index, mv_count, mv_loading, chooseMvType } = useNe
 .album_list,
 .mv_list,
 .dj-list,
-.artist-list {
+.hot_artist {
   padding: 0 10px;
   margin-bottom: 25px;
   background: #fff;
@@ -160,7 +160,7 @@ const { mv_area, mv_list, mv_index, mv_count, mv_loading, chooseMvType } = useNe
 .hot-list,
 .album_list,
 .mv_list {
-  min-width: 640px;
+  min-width: 600px;
 }
 
 .top_list {
@@ -168,12 +168,14 @@ const { mv_area, mv_list, mv_index, mv_count, mv_loading, chooseMvType } = useNe
 }
 .dj-artist {
   display: flex;
-}
-.dj-list {
-  flex: 1;
-  margin-right: 20px;
-}
-.artist-list {
-  width: 440px;
+  .dj-list {
+    min-width: 320px;
+    flex: 1.5;
+    margin-right: 20px;
+  }
+  .hot_artist {
+    flex: 1;
+    min-width: 240px;
+  }
 }
 </style>

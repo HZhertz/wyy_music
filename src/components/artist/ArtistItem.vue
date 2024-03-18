@@ -1,5 +1,15 @@
 <template>
-  <div class="item">
+  <div class="mini-item" v-if="styType === 'mini'">
+    <router-link :to="{ path: '/artist/detail', query: { id: item.id } }" class="mini-item-img">
+      <el-image :src="item.picUrl + '?param=120y120'">
+        <div slot="placeholder" class="image-slot">
+          <i class="iconfont icon-placeholder"></i>
+        </div>
+      </el-image>
+    </router-link>
+  </div>
+
+  <div class="item" v-else>
     <em class="circle"></em>
     <router-link :to="{ path: '/artist/detail', query: { id: item.id } }" class="faceImg">
       <el-image :src="item.picUrl + '?param=120y120'">
@@ -28,8 +38,13 @@ const props = defineProps({
   item: {
     // 歌手信息
     type: Object,
-    required: true
-  }
+    required: true,
+  },
+  // mini | normal
+  styType: {
+    type: String,
+    default: 'mini',
+  },
 })
 </script>
 
@@ -51,11 +66,7 @@ const props = defineProps({
     border-radius: 60px 12px 12px 60px;
     transition: all 0.3s ease-in-out;
     background: -moz-linear-gradient(-45deg, #ffffff 20%, #ffb08e 100%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(
-      -45deg,
-      #ffffff 20%,
-      #ffb08e 100%
-    ); /* Chrome10-25,Safari5.1-6 */
+    background: -webkit-linear-gradient(-45deg, #ffffff 20%, #ffb08e 100%); /* Chrome10-25,Safari5.1-6 */
     background: linear-gradient(
       135deg,
       #ffffff 20%,

@@ -12,36 +12,17 @@
     </template>
     <template #default>
       <div class="dj">
-        <router-link
-          :to="{ path: '/dj', query: { id: item.id } }"
-          class="item"
-          :key="item.id"
-          v-for="item in list"
-        >
-          <div class="faceImg">
-            <el-image :src="item.picUrl + '?param=120y120'">
-              <div slot="placeholder" class="image-slot">
-                <i class="iconfont icon-placeholder"></i>
-              </div>
-            </el-image>
-          </div>
-          <div class="info">
-            <div class="dj-name" v-if="item.name">
-              <i class="iconfont icon-dj"></i>{{ item.name }}
-            </div>
-            <div class="dj-rcmdtext" v-if="item.rcmdtext">{{ item.rcmdtext }}</div>
-            <div class="dj-count">
-              <span>共{{ $utils.formartNum(item.programCount) }}期</span>
-              <span>订阅{{ $utils.formartNum(item.subCount) }}次</span>
-            </div>
-          </div>
-        </router-link>
+        <div class="item" v-for="item in list">
+          <DjItem :item="item" />
+        </div>
       </div>
     </template>
   </el-skeleton>
 </template>
 <script setup>
-import { getCurrentInstance, onMounted, reactive, toRefs } from '@vue/runtime-core'
+import { getCurrentInstance, onMounted, reactive, toRefs } from 'vue'
+import DjItem from './DjItem.vue'
+
 const { proxy } = getCurrentInstance()
 
 // 热门电台
@@ -49,7 +30,7 @@ const info = reactive({
   list: [],
   params: { limit: 6 },
   count: 6,
-  loading: true
+  loading: true,
 })
 const { list, params, count, loading } = toRefs(info)
 
@@ -71,52 +52,12 @@ const getHotDj = async (params) => {
 </script>
 <style lang="less" scoped>
 .dj {
-  display: block;
+  display: flex;
   flex-wrap: wrap;
-  font-size: 0;
   margin-right: -20px;
 
   .item {
-    display: inline-flex;
-    width: 50%;
-    margin-bottom: 20px;
-  }
-
-  .faceImg {
-    width: 100px;
-    height: 100px;
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .info {
-    flex: 1;
-    padding: 5px 0;
-    margin: 0 20px;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    justify-content: space-around;
-    flex-direction: column;
-  }
-
-  .dj-name,
-  .icon-dj {
-    padding-right: 10px;
-    font-size: 18px;
-    font-weight: bold;
-    color: var(--color-text-main);
-  }
-
-  .dj-rcmdtext {
-    font-size: 14px;
-    color: var(--color-text);
-  }
-
-  .dj-count {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    color: #999;
+    margin: 5px;
   }
 }
 

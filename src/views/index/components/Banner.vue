@@ -115,7 +115,7 @@ const slidesPerView = computed(() => {
 }
 .banner_wrap {
   padding: 40px 0;
-  min-width: 640px;
+  min-width: 600px;
 
   .banner_img {
     cursor: pointer;

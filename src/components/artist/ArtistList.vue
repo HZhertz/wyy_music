@@ -1,96 +1,50 @@
 <template>
-  <el-skeleton :loading="loading" animated :throttle="500" :count="count">
+  <el-skeleton :loading="loading" animated :throttle="500" :count="size">
     <template #template>
       <el-skeleton-item class="ske-img" variant="image" />
     </template>
     <template #default>
-      <el-carousel
-        class="artist"
-        height="340px"
-        :interval="8000"
-        arrow="never"
-        indicator-position="outside"
-      >
-        <el-carousel-item class="box" :key="index" v-for="(list, index) in lists">
-          <router-link
-            :to="{ path: '/artist', query: { id: item.id } }"
-            :key="item.id"
-            v-for="item in list"
-            class="item"
-          >
-            <div class="faceImg">
-              <el-image :src="item.picUrl + '?param=100y100'">
-                <div slot="placeholder" class="image-slot">
-                  <i class="iconfont icon-placeholder"></i>
-                </div>
-              </el-image>
-            </div>
-            <div class="info">
-              <div class="artist-name" v-if="item.name">{{ item.name }}</div>
-            </div>
-          </router-link>
-        </el-carousel-item>
-      </el-carousel>
+      <div class="artist-list">
+        <div class="item" v-for="item in artistList">
+          <ArtistItem :item="item" />
+        </div>
+      </div>
     </template>
   </el-skeleton>
 </template>
 <script setup>
-import { getCurrentInstance, onMounted, reactive, toRefs } from '@vue/runtime-core'
-const { proxy } = getCurrentInstance()
+import ArtistItem from './ArtistItem.vue'
 
-// 热门电台
-const info = reactive({
-  lists: [],
-  params: { limit: 36 },
-  count: 12,
-  loading: true
+const props = defineProps({
+  artistList: {
+    // 歌手信息
+    type: Object,
+    required: true,
+  },
+  // mini | normal
+  styType: {
+    type: String,
+    default: 'mini',
+  },
+  size: {
+    type: Number,
+  },
+  loading: {
+    type: Boolean,
+  },
 })
-const { lists, params, count, loading } = toRefs(info)
-
-onMounted(() => {
-  getArtists(params.value)
-})
-
-// 热门歌手
-const getArtists = async (params) => {
-  const { data: res } = await proxy.$http.topArtists(params)
-
-  if (res.code !== 200) {
-    return proxy.$msg.error('数据请求失败')
-  }
-
-  lists.value = splitGroup(res.artists, count.value)
-  loading.value = false
-}
-
-// 将数组变为二维数组
-const splitGroup = (array, subGroupLength) => {
-  let index = 0
-  let newArray = []
-  while (index < array.length) {
-    newArray.push(array.slice(index, (index += subGroupLength)))
-  }
-  return newArray
-}
 </script>
 <style lang="less" scoped>
-.artist {
-  display: block;
-  height: 360px;
-  font-size: 0;
-
-  .box {
-    display: flex;
-    flex-wrap: wrap;
-    align-content: space-between;
-    justify-content: space-between;
-  }
-
+.artist-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: space-between;
+  justify-content: space-between;
   .item {
-    // width: 100px;
-    // height: 100px;
+    width: 90px;
+    height: 90px;
+    margin: 10px 5px;
     border-radius: 4px;
-    overflow: hidden;
   }
 }
 
