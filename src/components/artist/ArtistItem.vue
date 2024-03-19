@@ -49,6 +49,13 @@ const props = defineProps({
 </script>
 
 <style lang="less" scoped>
+.mini-item {
+  border-radius: 12px;
+  .mini-item-img {
+    border-radius: 12px;
+  }
+}
+
 .item {
   position: relative;
   display: flex;

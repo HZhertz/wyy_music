@@ -211,8 +211,8 @@ const subAlbum = async () => {
 }
 
 // 订阅该歌单的用户列表
-const getCollect = async (params) => {
-  const { data: res } = await proxy.$http.playlistSCollect(params)
+const getPlaylistSubscribers = async (params) => {
+  const { data: res } = await proxy.$http.playlistSubscribers(params)
 
   if (res.code !== 200) {
     return proxy.$msg.error('数据请求失败')
@@ -223,7 +223,7 @@ const getCollect = async (params) => {
 const _initialize = () => {
   getAlbum({ id: info.albumId })
   getAlbumDynamic({ id: info.albumId })
-  getCollect({ id: info.albumId })
+  getPlaylistSubscribers({ id: info.albumId })
 }
 
 onMounted(() => {

@@ -1,73 +1,73 @@
 <template>
   <div class="rank">
     <div class="rank-container">
-      <div class="rank-main">
-        <div class="cover">
-          <div class="cover-img">
-            <el-image :src="rankInfo.coverImgUrl">
-              <div slot="placeholder" class="image-slot">
-                <i class="iconfont icon-placeholder"></i>
-              </div>
-            </el-image>
-          </div>
-          <div class="cover-info">
-            <div class="cover-header">
-              <div class="cover-title">
-                {{ rankInfo.name }}
-                <span>({{ $utils.formartDate(rankInfo.updateTime, 'MM月dd日') }} 更新)</span>
-              </div>
-            </div>
-            <div class="cover-author-tags">
-              <div class="cover-author" v-if="rankInfo.creator">
-                <el-image :src="rankInfo.creator.avatarUrl" class="cover-avatar">
-                  <div slot="placeholder" class="image-slot">
-                    <i class="iconfont icon-placeholder"></i>
-                  </div>
-                </el-image>
-                <div class="cover-name">{{ rankInfo.creator.nickname }}</div>
-                <div class="cover-date">
-                  {{ $utils.formartDate(rankInfo.createTime, 'yyyy-MM-dd') }}
-                </div>
-              </div>
-            </div>
-            <div class="cover-digital">
-              <span class="cover-playCount"
-                ><i class="iconfont icon-playnum"></i> {{ $utils.formartNum(rankInfo.playCount) }}次</span
-              >
-              <span class="cover-collect"
-                ><i class="iconfont icon-collect"></i> {{ $utils.formartNum(rankInfo.subscribedCount) }}</span
-              >
-              <span class="cover-comment"
-                ><i class="iconfont icon-comment"></i> {{ $utils.formartNum(rankInfo.commentCount) }}</span
-              >
-            </div>
-            <div class="cover-desc">
-              <h5>歌单简介</h5>
-              <p v-html="rankInfo.description"></p>
-            </div>
-          </div>
-        </div>
-        <div class="song-main">
-          <div class="song-header">
-            <h4>
-              歌曲列表 <em>{{ total + '首歌' }}</em>
-            </h4>
-            <span class="play-all" @click="playAllSongs"
-              ><i class="iconfont icon-audio-play"></i> 播放全部</span
-            >
-            <span :class="['collect', rankInfo.subscribed ? 'active' : '']" @click="subPlayList(rankInfo)"
-              ><i :class="['iconfont', 'icon-collect' + (rankInfo.subscribed ? '-active' : '')]"></i>
-              {{ rankInfo.subscribed ? '已收藏' : '收藏' }}</span
-            >
-          </div>
-          <template v-if="isLoading">
-            <Loading />
-          </template>
-          <template v-else>
-            <SongList :songList="songList" :stripe="true" />
-          </template>
-        </div>
-      </div>
+				<div class="rank-main">
+					<div class="cover">
+						<div class="cover-img">
+							<el-image :src="rankInfo.coverImgUrl">
+								<div slot="placeholder" class="image-slot">
+									<i class="iconfont icon-placeholder"></i>
+								</div>
+							</el-image>
+						</div>
+						<div class="cover-info">
+							<div class="cover-header">
+								<div class="cover-title">
+									{{ rankInfo.name }}
+									<span>({{ $utils.formartDate(rankInfo.updateTime, 'MM月dd日') }} 更新)</span>
+								</div>
+							</div>
+							<div class="cover-author-tags">
+								<div class="cover-author" v-if="rankInfo.creator">
+									<el-image :src="rankInfo.creator.avatarUrl" class="cover-avatar">
+										<div slot="placeholder" class="image-slot">
+											<i class="iconfont icon-placeholder"></i>
+										</div>
+									</el-image>
+									<div class="cover-name">{{ rankInfo.creator.nickname }}</div>
+									<div class="cover-date">
+										{{ $utils.formartDate(rankInfo.createTime, 'yyyy-MM-dd') }}
+									</div>
+								</div>
+							</div>
+							<div class="cover-digital">
+								<span class="cover-playCount"
+									><i class="iconfont icon-playnum"></i> {{ $utils.formartNum(rankInfo.playCount) }}次</span
+								>
+								<span class="cover-collect"
+									><i class="iconfont icon-collect"></i> {{ $utils.formartNum(rankInfo.subscribedCount) }}</span
+								>
+								<span class="cover-comment"
+									><i class="iconfont icon-comment"></i> {{ $utils.formartNum(rankInfo.commentCount) }}</span
+								>
+							</div>
+							<div class="cover-desc">
+								<h5>歌单简介</h5>
+								<p v-html="rankInfo.description"></p>
+							</div>
+						</div>
+					</div>
+					<div class="song-main">
+						<div class="song-header">
+							<h4>
+								歌曲列表 <em>{{ total + '首歌' }}</em>
+							</h4>
+							<span class="play-all" @click="playAllSongs"
+								><i class="iconfont icon-audio-play"></i> 播放全部</span
+							>
+							<span :class="['collect', rankInfo.subscribed ? 'active' : '']" @click="subPlayList(rankInfo)"
+								><i :class="['iconfont', 'icon-collect' + (rankInfo.subscribed ? '-active' : '')]"></i>
+								{{ rankInfo.subscribed ? '已收藏' : '收藏' }}</span
+							>
+						</div>
+						<template v-if="isLoading">
+							<Loading />
+						</template>
+						<template v-else>
+							<SongList :songList="songList" :stripe="true" />
+						</template>
+					</div>
+				</div>
       <div class="rank-aside">
         <div class="aside-menu">
           <span :class="type === 'Top' ? 'active' : ''" @click="selectType('Top')"><em>TOP榜</em></span>

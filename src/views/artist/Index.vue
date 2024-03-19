@@ -9,7 +9,7 @@
           infinite-scroll-distance="100"
         >
           <template v-for="item in list">
-            <ArtistItem :item="item" />
+            <ArtistItem :item="item" styType="normal" />
           </template>
           <template v-if="isLoading">
             <Loading />

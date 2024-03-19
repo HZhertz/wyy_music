@@ -227,8 +227,8 @@ const loginDialog = () => {
 }
 
 // 订阅该歌单的用户列表
-const getCollect = async (params) => {
-  const { data: res } = await proxy.$http.playlistSCollect(params)
+const getPlaylistSubscribers = async (params) => {
+  const { data: res } = await proxy.$http.playlistSubscribers(params)
 
   if (res.code !== 200) {
     return proxy.$msg.error('数据请求失败')
@@ -296,7 +296,7 @@ const _initialize = (id) => {
   // 歌单详情
   getDetail({ id: id, s: 8 })
   // 歌单收藏者
-  getCollect({ id: id, limit: 8 })
+  getPlaylistSubscribers({ id: id, limit: 8 })
   // 相关歌单推荐
   getRecom({ id: id })
   // // 歌单评论
@@ -451,6 +451,7 @@ const _initialize = (id) => {
     color: var(--color-text-height);
   }
 }
+
 .cover-playCount,
 .cover-collect,
 .cover-comment {

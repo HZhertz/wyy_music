@@ -19,6 +19,7 @@ const routes = [
   { path: '/dj', name: 'dj', component: () => import('@/views/dj/index.vue') },
   { path: '/search', name: 'search', component: () => import('@/views/search/index.vue') },
   { path: '/user', name: 'user', component: () => import('@/views/user/index.vue') },
+  { path: '/my', name: 'my', component: () => import('@/views/my/index.vue') },
 ]
 
 const router = createRouter({

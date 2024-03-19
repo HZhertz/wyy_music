@@ -12,6 +12,14 @@ const logout = () => {
 const getUserInfo = ({ uid = '' }) => {
   return api.get(`/user/detail?uid=${uid}`, {})
 }
+// 获取用户信息 , 歌单，收藏，mv, dj 数量
+const getUserSubcount = () => {
+  return api.get('/user/subcount', {})
+}
+// 获取用户歌单
+const getUserPlaylist = ({ uid = '' }) => {
+  return api.get(`/user/playlist?uid=${uid}`, {})
+}
 
 /* ********* 搜索 ********* */
 // 热门搜索
@@ -165,7 +173,7 @@ const playlistTrackAll = ({ id, limit, offset }) => {
   return api.get(`/playlist/track/all?id=${id}&limit=${limit}&offset=${offset}`, {})
 }
 // 歌单收藏用户
-const playlistSCollect = ({ id = '', limit = 20, offset = 0 }) => {
+const playlistSubscribers = ({ id = '', limit = 20, offset = 0 }) => {
   return api.get(`/playlist/subscribers?id=${id}&limit=${limit}&offset=${offset}`, {})
 }
 // 相关歌单推荐
@@ -279,6 +287,8 @@ export {
   login,
   logout,
   getUserInfo,
+  getUserSubcount,
+  getUserPlaylist,
   serachHot,
   serachSuggest,
   getBanner,
@@ -321,7 +331,7 @@ export {
   artistDesc,
   simiArtist,
   playlistdetail,
-  playlistSCollect,
+  playlistSubscribers,
   playlistRelated,
   playlistComment,
   subPlayList,

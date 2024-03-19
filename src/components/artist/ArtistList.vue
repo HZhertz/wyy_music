@@ -6,7 +6,7 @@
     <template #default>
       <div class="artist-list">
         <div class="item" v-for="item in artistList">
-          <ArtistItem :item="item" />
+          <ArtistItem :item="item" :styType="styType" />
         </div>
       </div>
     </template>
@@ -33,6 +33,8 @@ const props = defineProps({
     type: Boolean,
   },
 })
+
+
 </script>
 <style lang="less" scoped>
 .artist-list {

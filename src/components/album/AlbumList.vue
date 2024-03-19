@@ -41,8 +41,8 @@ const props = defineProps({
     required: true,
   },
   height: {
-    type: String,
-    default: '100',
+    type: Number,
+    default: 100,
   },
   // 前端分页 1|后端分页 2|滚动加载 0
   paginaType: {
