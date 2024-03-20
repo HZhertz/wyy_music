@@ -144,7 +144,7 @@ import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import Lyrics from '@/components/song/Lyrics.vue'
 import CommentList from '@/components/Comments.vue'
-import { formatSongInfo } from '@/utils/song.js'
+// import { formatSongInfo } from '@/utils/song.js'
 
 const { proxy } = getCurrentInstance()
 const store = useStore()
@@ -222,7 +222,7 @@ const getSimiSong = async () => {
     return proxy.$msg.error('数据请求失败')
   }
   info.simiSong = res.songs.map((item) => {
-    return formatSongInfo(item)
+    return proxy.$utils.formatSongInfo(item)
   })
 }
 const playSimiIcon = computed(() => {

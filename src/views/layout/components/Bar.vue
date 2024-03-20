@@ -13,11 +13,11 @@
     </div>
 
     <!-- 播放进度条 -->
-    <progress-line
+    <ProgressLine
       class="audioProgress"
       :progressWidth="audioProgressWidth"
       @setProgressLine="setAudioProgress"
-    ></progress-line>
+    />
     <div class="wrapper">
       <div class="play-bar-inside">
         <div class="bar-l">
@@ -57,11 +57,11 @@
           <div class="bar-oper">
             <div class="volume-main">
               <i :class="['iconfont', mutedIcon]" title="音量" @click.stop="volumeHandler"></i>
-              <progress-line
+              <ProgressLine
                 class="volumeLine"
                 :progressWidth="volumeProgressWidth"
                 @setProgressLine="setvolumeProgress"
-              ></progress-line>
+              />
             </div>
             <i
               class="iconfont"
@@ -81,7 +81,7 @@
                     <span>歌词</span>
                     <!-- <i class="iconfont icon-closed" @click="popverClose"></i> -->
                   </h3>
-                  <lyrics :sId="curSongInfo.id" :currentTime="currentTime"></lyrics>
+                  <Lyrics :sId="curSongInfo.id" :currentTime="currentTime" />
                 </div>
               </el-popover>
 
@@ -102,13 +102,7 @@
                       <i class="iconfont icon-del" title="清空列表"></i>清空列表
                     </div>
                   </h3>
-                  <song-list
-                    :songList="playList"
-                    :isScroll="true"
-                    :height="400"
-                    :typeSize="'mini'"
-                    :isShowTips="false"
-                  ></song-list>
+                  <SongList :songList="playList" :isScroll="true" :height="400" :typeSize="'mini'" />
                 </div>
               </el-popover>
 
@@ -122,305 +116,298 @@
   </div>
 </template>
 
-<script>
-import ProgressLine from './ProgressLine.vue'
-import Lyrics from '@/components/song/Lyrics.vue'
-import SongList from '@/components/SongList.vue'
+<script setup>
 import {
   computed,
   getCurrentInstance,
   inject,
-  nextTick,
   onBeforeUnmount,
   onMounted,
   reactive,
-  ref,
   toRefs,
-  watchEffect,
+  watch,
 } from 'vue'
 import { useStore } from 'vuex'
-export default {
-  name: 'Bar',
-  setup(props, { emit }) {
-    const store = useStore()
+import ProgressLine from './ProgressLine.vue'
+import Lyrics from '@/components/song/Lyrics.vue'
+import SongList from '@/components/SongList.vue'
 
-    const { proxy } = getCurrentInstance()
-    const info = reactive({
-      // 歌词弹窗时，固定播放条
-      isLock: false,
-      locked: false,
-      lockName: 'active',
-      manual: true,
+const { proxy } = getCurrentInstance()
+const store = useStore()
+const emit = defineEmits([
+  'setAudioProgress',
+  'audioHandler',
+  'setVolumeHandler',
+  'setvolumeProgress',
+  'playAudioMode',
+])
+const info = reactive({
+  isLock: false, // 歌词弹窗时，固定播放条
+  locked: false,
+  lockName: 'active',
+  manual: true,
+  currentTime: inject('currentTime'), // 音频当前时长
+  isMuted: false, // 是否禁音
+  playMode: 0, // 播放模式  0循环播放、1单曲循环、2随机播放
+  volumeNum: 1, // 音量值(0~1)
+  oldVolume: 0, // 取消禁音的时候，设置保留的上一次的音量值
+  isPip: false,
+  timer: null,
+  tipsTimer: null,
+})
+const {
+  isLock,
+  locked,
+  lockName,
+  manual,
+  currentTime, // 音频当前时长
+  isMuted, // 是否禁音
+  playMode, // 播放模式  0循环播放、1单曲循环、2随机播放
+  volumeNum, // 音量值(0~1)
+  oldVolume, // 取消禁音的时候，设置保留的上一次的音量值
+  isPip,
+  timer,
+  tipsTimer,
+} = toRefs(info)
 
-      currentTime: inject('currentTime'), // 音频当前时长
-      isMuted: false, // 是否禁音
-      playMode: 0, // 播放模式  0循环播放、1单曲循环、2随机播放
-      volumeNum: 1, // 音量值(0~1)
-      oldVolume: 0, // 取消禁音的时候，设置保留的上一次的音量值
-      isPip: false,
-      timer: null,
-      tipsTimer: null,
-    })
-
-    onMounted(() => {
-      leaveBar()
-      store.commit('SET_PLAYLIST', playList.value)
-    })
-
-    onBeforeUnmount(() => {
-      clearTimeout(info.timer)
-      clearTimeout(info.tipsTimer)
-    })
-
-    // 获取播放列表
-    const playIndex = computed(() => store.getters.playIndex)
-    const playList = computed(() => store.getters.playList)
-    const isPlayed = computed(() => store.getters.isPlayed)
-    // 添加歌曲到播放列表后，弹窗tips提示
-    const isShowPlayListTips = computed(() => {
-      let val = store.getters.isShowPlayListTips
-
-      if (val) {
-        clearTimeout(info.tipsTimer)
-        info.tipsTimer = setTimeout(() => {
-          store.commit('SET_PLAYLISTTIPS', false)
-        }, 3000)
-      }
-
-      return val
-    })
-
-    // 获取当前播放歌曲信息
-    const curSongInfo = computed(() => playList.value[playIndex.value])
-
-    // 播放模式
-    const modeIcon = computed(() => {
-      const params = [
-        {
-          className: 'icon-loop',
-          title: '循环模式',
-        },
-        {
-          className: 'icon-single-cycle',
-          title: '单曲循环',
-        },
-        {
-          className: 'icon-shuffle',
-          title: '随机播放',
-        },
-      ]
-      return params[info.playMode]
-    })
-    // 切换播放模式
-    const changePlayMode = () => {
-      info['playMode'] = info['playMode'] >= 2 ? 0 : info['playMode'] + 1
-
-      emit('playAudioMode', info['playMode'])
-    }
-
-    // 音频播放进度条
-    const audioProgressWidth = computed(() => {
-      // 音频进度条长度
-      return (info['currentTime'] / proxy.$utils.formatSongSecond(curSongInfo.value.duration)) * 100 + '%'
-    })
-    // 设置音频音量进度条
-    const volumeProgressWidth = computed(() => {
-      return (info['volumeNum'] / 1) * 100 + '%'
-    })
-
-    // 音量禁音及取消操作
-    const volumeHandler = () => {
-      info['isMuted'] = info['isMuted'] ? 0 : 1
-      info['isMuted'] && (info['oldVolume'] = info['volumeNum'])
-      info['volumeNum'] = info['isMuted'] ? 0 : info['oldVolume']
-
-      emit('setVolumeHandler', info['isMuted'])
-    }
-
-    // 点击拖拽音量条，设置当前音量
-    const setvolumeProgress = (params) => {
-      info['volumeNum'] = params.val
-      info['oldVolume'] = params.val
-      info['isMuted'] = params.val ? 0 : 1
-
-      emit('setvolumeProgress', params.val)
-    }
-
-    // 播放暂停按钮
-    const playIcon = computed(() => {
-      return !isPlayed.value ? 'icon-audio-play' : 'icon-audio-pause'
-    })
-
-    // 是否静音
-    const mutedIcon = computed(() => {
-      return info['isMuted'] ? 'icon-volume-active' : 'icon-volume'
-    })
-
-    // 音频播放/暂停/上一首/下一首事件
-    const audioHandler = (type) => {
-      emit('audioHandler', type)
-
-      if (info['isPip']) {
-        changePipSong()
-      }
-    }
-
-    // 点击拖拽进度条，设置当前时间
-    const setAudioProgress = (params) => {
-      info['initAudioReady'] = false
-      info['currentTime'] = params.val * proxy.$utils.formatSongSecond(curSongInfo.value.duration)
-
-      // 拖拽的时候，不实时更改音频的时间
-      if (params.flag) {
-        emit('setAudioProgress', info['currentTime'])
-      }
-    }
-
-    const changeMini = () => {
-      emit('changeMini', 'MiniBar')
-    }
-
-    const popverHandle = () => {
-      info['isLock'] = true
-    }
-
-    const popverClose = () => {
-      info['isLock'] = false
-      leaveBar()
-    }
-
-    const enterBar = () => {
-      clearTimeout(info.timer)
-      info.lockName = 'active'
-    }
-
-    const leaveBar = (e) => {
-      // 点击锁住按钮，会触发mouseleave 事件 此时的e的值是 undefined  而正常通过鼠标移出的时候 e是个对象
-      // if (!e) return
-      if (!info['isLock'] && !info['locked']) {
-        clearTimeout(info.timer)
-        info.timer = setTimeout(() => {
-          info.lockName = info.isLock ? 'active' : ''
-        }, 3000)
-      }
-    }
-
-    const lockBar = () => {
-      info.locked = !info.locked
-      info.isLock = info.locked
-      leaveBar()
-    }
-
-    // 清空播放列表
-    const clearSonglist = () => {
-      store.commit('SET_PLAYSTATUS', false)
-      store.commit('SET_PLAYLIST', [])
-      store.commit('SET_PLAYINDEX', 0)
-    }
-
-    // 画中画
-    const canvas = document.createElement('canvas')
-    canvas.width = 250
-    canvas.height = 250
-
-    const video = document.createElement('video')
-    video.srcObject = canvas.captureStream()
-    video.muted = true
-
-    const picInpic = () => {
-      info['isPip'] = !info['isPip']
-
-      changePipSong()
-    }
-
-    // 切换画中画里音频相关信息
-    const changePipSong = () => {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: curSongInfo.value.name,
-        artist: curSongInfo.value.singer[0].name,
-        album: curSongInfo.value.album.name,
-        artwork: [{ src: curSongInfo.value.album.picUrl }],
-      })
-
-      if (info['isPip']) {
-        showPictureInPictureWindow()
-      } else {
-        document.exitPictureInPicture()
-      }
-    }
-
-    const showPictureInPictureWindow = async () => {
-      const image = new Image()
-      image.crossOrigin = true
-      image.src = [...navigator.mediaSession.metadata.artwork].pop().src
-      await image.decode()
-
-      canvas.getContext('2d').drawImage(image, 0, 0, 250, 250)
-      await video.play()
-      await video.requestPictureInPicture()
-    }
-
-    const actionHandlers = [
-      ['play', 'play'],
-      ['pause', 'play'],
-      ['previoustrack', 'prev'],
-      ['nexttrack', 'next'],
-    ]
-
-    for (const [action, type] of actionHandlers) {
-      navigator.mediaSession.setActionHandler(action, () => {
-        audioHandler(type)
-        changePipSong()
-
-        if (action == 'play') {
-          navigator.mediaSession.playbackState = 'playing'
-        } else if (action == 'pause') {
-          navigator.mediaSession.playbackState = 'paused'
-        }
-      })
-    }
-
-    // 退出画中画
-    video.addEventListener(
-      'leavepictureinpicture',
-      () => {
-        info['isPip'] = false
-      },
-      false
-    )
-
-    return {
-      leaveBar,
-      enterBar,
-      lockBar,
-      ...toRefs(info),
-      playList,
-      isShowPlayListTips,
-      curSongInfo,
-      modeIcon,
-      playIcon,
-      mutedIcon,
-      audioHandler,
-      volumeHandler,
-      audioProgressWidth,
-      changePlayMode,
-      popverClose,
-      popverHandle,
-      clearSonglist,
-      setAudioProgress,
-      volumeProgressWidth,
-      setvolumeProgress,
-      picInpic,
-      changeMini,
-    }
-  },
-
-  components: {
-    ProgressLine,
-    Lyrics,
-    SongList,
-  },
+const enterBar = () => {
+  clearTimeout(info.timer)
+  info.lockName = 'active'
 }
+const leaveBar = (e) => {
+  // 点击锁住按钮，会触发mouseleave 事件 此时的e的值是 undefined  而正常通过鼠标移出的时候 e是个对象
+  // if (!e) return
+  if (!info.isLock && !info.locked) {
+    clearTimeout(info.timer)
+    info.timer = setTimeout(() => {
+      info.lockName = ''
+    }, 3000)
+  }
+}
+
+const lockBar = () => {
+  info.locked = !info.locked
+  info.isLock = info.locked
+  // leaveBar()
+}
+
+// 获取播放列表
+const playIndex = computed(() => store.getters.playIndex)
+const playList = computed(() => store.getters.playList)
+const isPlayed = computed(() => store.getters.isPlayed)
+// 获取当前播放歌曲信息
+const curSongInfo = computed(() => playList.value[playIndex.value])
+
+// 音频播放进度条
+const audioProgressWidth = computed(() => {
+  // 音频进度条长度
+  return (info.currentTime / proxy.$utils.formatSongSecond(curSongInfo.value.duration)) * 100 + '%'
+})
+// 点击拖拽进度条，设置当前时间
+const setAudioProgress = (params) => {
+  console.log('params', params)
+  info.currentTime = params.val * proxy.$utils.formatSongSecond(curSongInfo.value.duration)
+
+  // 拖拽的时候，不实时更改音频的时间
+  if (params.flag) {
+    emit('setAudioProgress', info.currentTime)
+  }
+}
+
+// 音频播放/暂停/上一首/下一首事件
+const audioHandler = (type) => {
+  emit('audioHandler', type)
+
+  if (info.isPip) {
+    changePipSong()
+  }
+}
+// 播放暂停按钮
+const playIcon = computed(() => {
+  return !isPlayed.value ? 'icon-audio-play' : 'icon-audio-pause'
+})
+
+// 音量禁音及取消操作
+const volumeHandler = () => {
+  info.isMuted = info.isMuted ? 0 : 1 //转为 Number 同时取反
+  info.isMuted && (info.oldVolume = info.volumeNum)
+  info.volumeNum = info.isMuted ? 0 : info.oldVolume
+
+  emit('setVolumeHandler', info.isMuted)
+}
+// 设置音频音量进度条
+const volumeProgressWidth = computed(() => {
+  return (info.volumeNum / 1) * 100 + '%'
+})
+// 点击拖拽音量条，设置当前音量
+const setvolumeProgress = (params) => {
+  info.volumeNum = params.val
+  info.oldVolume = params.val
+  info.isMuted = params.val ? 0 : 1
+
+  emit('setvolumeProgress', params.val)
+}
+// 是否静音
+const mutedIcon = computed(() => {
+  return info['isMuted'] ? 'icon-volume-active' : 'icon-volume'
+})
+
+// 播放模式
+const modeIcon = computed(() => {
+  const params = [
+    {
+      className: 'icon-loop',
+      title: '循环模式',
+    },
+    {
+      className: 'icon-single-cycle',
+      title: '单曲循环',
+    },
+    {
+      className: 'icon-shuffle',
+      title: '随机播放',
+    },
+  ]
+  return params[info.playMode]
+})
+// 切换播放模式
+const changePlayMode = () => {
+  info.playMode = info.playMode >= 2 ? 0 : info.playMode + 1
+
+  emit('playAudioMode', info.playMode)
+}
+
+const popverHandle = () => {
+  info.isLock = true
+}
+const popverClose = () => {
+  info.isLock = false
+  leaveBar()
+}
+
+// 添加歌曲到播放列表后，弹窗tips提示
+const isShowPlayListTips = computed(() => {
+  let val = store.getters.isShowPlayListTips
+
+  if (val) {
+    clearTimeout(info.tipsTimer)
+    info.tipsTimer = setTimeout(() => {
+      store.commit('SET_PLAYLISTTIPS', false)
+    }, 3000)
+  }
+
+  return val
+})
+// 清空播放列表
+const clearSonglist = () => {
+  store.commit('SET_PLAYSTATUS', false)
+  store.commit('SET_PLAYLIST', [])
+  store.commit('SET_PLAYINDEX', 0)
+}
+
+onMounted(() => {
+  leaveBar()
+  store.commit('SET_PLAYLIST', playList.value)
+})
+
+onBeforeUnmount(() => {
+  clearTimeout(info.timer)
+  clearTimeout(info.tipsTimer)
+})
+
+const changeMini = () => {
+  emit('changeMini', 'MiniBar')
+}
+
+// 画中画
+const canvas = document.createElement('canvas')
+canvas.width = 250
+canvas.height = 250
+
+const video = document.createElement('video')
+video.srcObject = canvas.captureStream()
+video.muted = true
+
+const picInpic = () => {
+  info.isPip = !info.isPip
+  changePipSong()
+}
+
+// 切换画中画里音频相关信息
+const changePipSong = () => {
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: curSongInfo.value.name,
+    artist: curSongInfo.value.singer[0].name,
+    album: curSongInfo.value.album.name,
+    artwork: [{ src: curSongInfo.value.album.picUrl }],
+  })
+
+  if (info.isPip) {
+    showPictureInPictureWindow()
+  } else if (document.pictureInPictureElement) {
+    document.exitPictureInPicture()
+  }
+}
+
+const showPictureInPictureWindow = async () => {
+  const image = new Image()
+  image.crossOrigin = true //允许跨域请求图像资源
+  image.src = [...navigator.mediaSession.metadata.artwork].pop().src
+  await image.decode()
+
+  canvas.getContext('2d').drawImage(image, 0, 0, 250, 250)
+  console.log('isPlayed:', isPlayed.value)
+  // ......
+  if (isPlayed.value) {
+    await video.play()
+  } else {
+    await video.play()
+    video.pause()
+  }
+  console.log('>>>')
+  await video.requestPictureInPicture()
+}
+
+const actionHandlers = [
+  ['play', 'play'],
+  ['pause', 'play'],
+  ['previoustrack', 'prev'],
+  ['nexttrack', 'next'],
+]
+
+for (const [action, type] of actionHandlers) {
+  navigator.mediaSession.setActionHandler(action, async () => {
+    audioHandler(type)
+    if (action == 'previoustrack' || action == 'nexttrack') {
+      changePipSong()
+      // navigator.mediaSession.playbackState = 'playing'
+    }
+
+    console.log('action:', action)
+    if (action == 'play') {
+      navigator.mediaSession.playbackState = 'playing'
+      // video.play()
+      console.log('play', 'navigator.mediaSession.playbackState:', navigator.mediaSession.playbackState)
+    } else if (action == 'pause') {
+      navigator.mediaSession.playbackState = 'paused'
+      // video.pause()
+
+      console.log('paused', 'navigator.mediaSession.playbackState:', navigator.mediaSession.playbackState)
+    }
+  })
+}
+
+// 退出画中画
+video.addEventListener(
+  'leavepictureinpicture',
+  () => {
+    info['isPip'] = false
+  },
+  false
+)
+watch(curSongInfo, () => {
+  changePipSong()
+})
 </script>
 <style scoped lang="less">
 .play-bar {

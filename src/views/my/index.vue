@@ -1,7 +1,7 @@
 <template>
   <div class="my" v-if="isLogin">
     <div class="my_side">
-      <el-scrollbar height="610px">
+      <el-scrollbar height="630px">
         <el-menu
           router
           active-text-color="#2d2d2d"
@@ -46,6 +46,7 @@
       <PlayListMain :playlistId="pId" />
     </div>
   </div>
+  <div class="non_login" v-else>登录后查看更多</div>
 </template>
 
 <script setup>
@@ -107,7 +108,7 @@ onBeforeRouteUpdate((to) => {
     position: fixed;
 
     width: 300px;
-    height: 610px;
+    height: 630px;
     // padding-bottom: 25px;
     background: #fff;
     border-radius: 12px;
@@ -139,7 +140,7 @@ onBeforeRouteUpdate((to) => {
   }
   .my_main {
     flex: 1;
-    padding-bottom: 45px;
+    padding-bottom: 24px;
     padding-left: 320px;
   }
 }
@@ -156,5 +157,12 @@ onBeforeRouteUpdate((to) => {
 }
 :deep(.el-menu-item.is-active) {
   background-color: #f0f0f0;
+}
+.el-scrollbar {
+  background: #fff;
+
+  border-top: 3px solid var(--color-text-height);
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 20px 27px rgb(0 0 0 / 5%);
 }
 </style>
