@@ -80,13 +80,13 @@
             <h4>
               歌曲列表 <em>{{ total + '首歌' }}</em>
             </h4>
-            <span class="play-all" @click="playAllSongs"
-              ><i class="iconfont icon-audio-play"></i> 播放全部</span
-            >
-            <span :class="['collect', details.subscribed ? 'active' : '']" @click="subPlayList(details)"
-              ><i :class="['iconfont', 'icon-collect' + (details.subscribed ? '-active' : '')]"></i>
-              {{ details.subscribed ? '已收藏' : '收藏' }}</span
-            >
+            <span class="play-all" @click="playAllSongs">
+							<i class="iconfont icon-audio-play"></i> 播放全部
+            </span>
+            <span :class="['collect', details.subscribed ? 'active' : '']" @click="subPlayList(details)">
+              <i :class="['iconfont', 'icon-collect' + (details.subscribed ? '-active' : '')]"></i>
+              {{ details.subscribed ? '已收藏' : '收藏' }}
+            </span>
           </div>
           <template v-if="isLoading">
             <Loading />

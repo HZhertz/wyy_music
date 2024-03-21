@@ -46,11 +46,17 @@
             </el-image>
           </router-link>
           <div class="comment_info">
-            <router-link :to="{ path: '/user', query: { id: item.user.userId } }">{{ item.user.nickname }}</router-link>
+            <router-link :to="{ path: '/user', query: { id: item.user.userId } }">{{
+              item.user.nickname
+            }}</router-link>
             <div class="comment_content">
               {{ item.content }}
             </div>
-            <div class="comment_reply" v-for="replyItem in item.beReplied" :key="replyItem.beRepliedCommentId">
+            <div
+              class="comment_reply"
+              v-for="replyItem in item.beReplied"
+              :key="replyItem.beRepliedCommentId"
+            >
               <router-link :to="{ path: '/user', query: { id: replyItem.user.userId } }">{{
                 replyItem.user.nickname
               }}</router-link
@@ -259,7 +265,8 @@ const replyComment = (item, index) => {
   //   store.commit('SET_LOGINDIALOG', true)
   //   return
   // }
-  info.replyCommentId = info.replyCommentId === item.commentId && info.replyIndex === index ? 0 : item.commentId
+  info.replyCommentId =
+    info.replyCommentId === item.commentId && info.replyIndex === index ? 0 : item.commentId
   info.replyIndex = index
 }
 
@@ -496,7 +503,14 @@ watch(
   }
 
   .comment_content {
+    width: 700px;
     line-height: 24px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    overflow: hidden;
   }
 
   .comment_reply {

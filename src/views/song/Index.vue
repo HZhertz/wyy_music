@@ -5,7 +5,7 @@
         <div class="song-l">
           <div class="song-info">
             <div class="info-top">
-              <h3 class="song-name">
+              <h3 class="song-name" :title="songInfo.name">
                 {{ songInfo.name }}
                 <router-link
                   class="mv-name"
@@ -16,7 +16,7 @@
                 </router-link>
                 <i v-if="songInfo.vip" class="iconfont icon-vip"></i>
               </h3>
-              <p>
+              <p class="author-box" :title="singerNames">
                 <router-link
                   :to="{ path: '/artist/detail', query: { id: author.id } }"
                   class="song-author"
@@ -26,16 +26,15 @@
                 >
               </p>
               <p class="song-related">
-                <span
-                  >专辑：<router-link
-                    class="song-album"
-                    :to="{ path: '/album', query: { id: songInfo.album.id } }"
-                    >{{ songInfo.album.name }}</router-link
-                  ></span
-                >
-                <span
-                  >发行时间：<em>{{ songInfo.publishTime }}</em></span
-                >
+                <span>
+                  专辑：
+                  <router-link class="song-album" :to="{ path: '/album', query: { id: songInfo.album.id } }">
+                    {{ songInfo.album.name }}
+                  </router-link>
+                </span>
+                <span v-if="songInfo.publishTime">
+                  发行时间：<em>{{ songInfo.publishTime }}</em>
+                </span>
               </p>
               <div class="cover-desc" v-if="coverDesc">
                 <h5>专辑简介</h5>
@@ -48,7 +47,7 @@
                   ><i :class="['iconfont', playFontIcon]"></i>
                   {{ songInfo.vip ? 'VIP尊享' : '立即播放' }}</span
                 >
-                <span class="play-btn play-collect" @click="showAddList"
+                <span class="play-btn play-collect" @click="showAddlist"
                   ><i class="iconfont icon-collect"></i> 收藏</span
                 >
                 <span class="play-btn play-comment" @click="jumpComment"
@@ -78,7 +77,7 @@
                 <div class="simi-song-status">
                   <i v-if="simiItem.vip" class="iconfont icon-vip"></i>
                   <i v-else @click="playing(simiItem)" :class="['iconfont', playSimiIcon(simiItem)]"></i>
-                  <i class="iconfont icon-add" title="添加到列表"></i>
+                  <i class="iconfont icon-add" title="添加到列表" @click="addSongList(simiItem)"></i>
                 </div>
               </div>
             </div>
@@ -90,7 +89,7 @@
         </div>
       </div>
       <div class="song-comments" ref="cBox">
-        <CommentList :type="commentType" :sId="sId"></CommentList>
+        <CommentList :type="commentType" :sId="sId" />
       </div>
     </div>
     <div class="aside-box">
@@ -136,15 +135,40 @@
       </div>
     </div>
   </div>
+  <el-dialog v-model="addlistVisible" title="选择要添加的歌单" width="500" center>
+    <el-scrollbar height="400px">
+      <div class="addlist">
+        <el-checkbox-group v-model="songInPlaylist">
+          <el-checkbox size="large" v-for="item in crePlaylist" :label="item.id" :key="item.id">
+            <template #default>
+              {{ songInPlaylist[item.id] }}
+              <div class="addlist-item">
+                <img :src="item.coverImgUrl" alt="" />
+                <div class="info">
+                  <span :title="item.name">{{ item.name }}</span>
+                  <span>{{ item.trackCount }}首</span>
+                </div>
+              </div>
+            </template>
+          </el-checkbox>
+        </el-checkbox-group>
+      </div>
+    </el-scrollbar>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="addlistVisible = false">取消</el-button>
+        <el-button @click="addlistVisible = false"> 确定 </el-button>
+      </div>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup>
-import { getCurrentInstance, reactive, toRefs, onMounted, computed, ref } from 'vue'
+import { getCurrentInstance, reactive, toRefs, onMounted, computed, ref, nextTick } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import Lyrics from '@/components/song/Lyrics.vue'
 import CommentList from '@/components/Comments.vue'
-// import { formatSongInfo } from '@/utils/song.js'
 
 const { proxy } = getCurrentInstance()
 const store = useStore()
@@ -158,8 +182,22 @@ const info = reactive({
   playlists: [],
   mlogMv: [],
   commentType: 0, // 0: 歌曲 1: mv 2: 歌单 3: 专辑  4: 电台 5: 视频 6: 动态
+  addlistVisible: false,
+  crePlaylist: [],
+  songInPlaylist: [],
 })
-const { songInfo, sId, coverDesc, simiSong, playlists, mlogMv, commentType } = toRefs(info)
+const {
+  songInfo,
+  sId,
+  coverDesc,
+  simiSong,
+  playlists,
+  mlogMv,
+  commentType,
+  addlistVisible,
+  crePlaylist,
+  songInPlaylist,
+} = toRefs(info)
 const cBox = ref(null)
 
 const isLogin = computed(() => store.getters.isLogin)
@@ -174,11 +212,13 @@ const playFontIcon = computed(() => (isCurSong.value ? 'icon-audio-pause' : 'ico
 // 若是无版权获取vip歌曲 播放按钮置灰
 const songDisable = computed(() => (info.songInfo.license || info.songInfo.vip ? 'disable' : ''))
 const currentTime = computed(() => {
-  console.log(info.sId, curSongInfo.value.id)
-  console.log('info.sId === curSongInfo.value.id:', info.sId === curSongInfo.value.id)
-  if (info.sId === curSongInfo.value.id) {
+  if (info.sId === curSongInfo.value?.id) {
     return store.getters.currentTime
   }
+})
+// let singerNames = info.songInfo.singer.map(item => item.name).join('/');
+const singerNames = computed(() => {
+  return info.songInfo.singer.map((item) => item.name).join('/')
 })
 
 // 获取歌曲详情
@@ -191,6 +231,7 @@ const getSongDetail = async () => {
   if (res.code !== 200) {
     return proxy.$msg.error('数据请求失败')
   }
+  console.log('getSongDetailRes:', res)
 
   // 是否有版权播放
   // res.songs[0].license = !res.privileges[0].cp
@@ -201,7 +242,9 @@ const getSongDetail = async () => {
 
 // 播放音乐
 const playing = (params) => {
-  // 若当当前播放歌曲不是本页显示的歌曲  立即播放当前页面歌曲
+  console.log('curSongInfo.value:', curSongInfo.value)
+  console.log('params:', params)
+  // 若当前无播放歌曲 或 当前播放歌曲不是本页显示的歌曲  立即播放选中歌曲
   if (!curSongInfo.value || curSongInfo.value.id !== params.id) {
     // 无版权及vip不可播放
     if (params.license) {
@@ -221,16 +264,60 @@ const playing = (params) => {
   }
 }
 
+const showAddlist = () => {
+  if (isLogin.value) {
+    console.log('getUserPlaylist>>>>>')
+    getUserPlaylist()
+    info.addlistVisible = true
+  } else {
+    proxy.$msg.warning('请登录后进行相关操作')
+  }
+}
+const uId = computed(() => store.getters.userInfo.userId)
+const getUserPlaylist = async () => {
+  const { data: res } = await proxy.$http.getUserPlaylist({ uid: uId.value })
+  info.crePlaylist = res.playlist.filter((item) => !item.subscribed)
+  info.crePlaylist.map(async (item) => {
+    // info.songInPlaylist[item.id] = await isSongInPlaylist(item.id)
+    await isSongInPlaylist(item.id)
+
+    // result && !info.songInPlaylist.includes(result) && info.songInPlaylist.push(result)
+  })
+  console.log('info.songInPlaylist:', info.songInPlaylist)
+}
+const isSongInPlaylist = async (playlistId) => {
+  const { data: res } = await proxy.$http.playlistTrackAll({ id: playlistId })
+
+  console.log(res)
+  console.log('playlistId:', playlistId, 'info.sId:', info.sId)
+  console.log(res.songs.some((item) => item.id == info.sId))
+
+  if (res.songs.some((item) => item.id == info.sId)) {
+    info.songInPlaylist.push(playlistId)
+    // return playlistId
+  } else {
+    info.songInPlaylist = info.songInPlaylist.filter((item) => item !== playlistId)
+  }
+  // return res.songs.some((item) => item.id == info.sId)
+  // return res.songs.some((item) => {
+  //   if (item.id == info.sId) {
+  //     return playlistId
+  //   }
+  // })
+}
+
 // 获取相似音乐
 const getSimiSong = async () => {
   const { data: res } = await proxy.$http.simiSong({ id: info.sId })
-
+  console.log('res:', res)
   if (res.code !== 200) {
     return proxy.$msg.error('数据请求失败')
   }
   info.simiSong = res.songs.map((item) => {
-    return proxy.$utils.formatSongInfo(item)
+    const [result] = proxy.$utils.formatSongs([item], [item.privilege])
+    return result
   })
+  console.log('info.simiSong:', info.simiSong)
 }
 const playSimiIcon = computed(() => {
   return function (item) {
@@ -240,6 +327,11 @@ const playSimiIcon = computed(() => {
       : 'icon-audio-play'
   }
 })
+// 添加当前歌曲到播放列表
+const addSongList = (item) => {
+  store.dispatch('addList', { list: [item] })
+  store.commit('SET_PLAYLISTTIPS', true)
+}
 
 // 包含这首歌的歌单
 const getSimiPlayList = async () => {
@@ -419,8 +511,9 @@ const init = () => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-width: 200px;
   padding: 20px;
-  height: 270px;
+  height: 300px;
   margin: 0 20px 20px 0;
   background-color: #fff;
   box-shadow: 0 20px 27px rgb(0 0 0 / 5%);
@@ -428,6 +521,7 @@ const init = () => {
 }
 .song-lyric {
   flex: 1;
+  min-width: 310px;
   padding: 20px;
   background-color: #fff;
   box-shadow: 0 20px 27px rgb(0 0 0 / 5%);
@@ -455,9 +549,16 @@ const init = () => {
   }
 }
 .song-name {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  overflow: hidden;
+  max-height: 100px;
   font-size: 30px;
   line-height: 50px;
-  padding-bottom: 20px;
+  // padding-bottom: 20px;
 
   .iconfont {
     margin-right: 10px;
@@ -465,23 +566,42 @@ const init = () => {
     color: var(--color-text-height);
   }
 }
+
+.author-box {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  overflow: hidden;
+  max-height: 40px;
+}
 .song-author {
   display: inline-block;
+
   font-size: 18px;
   color: var(--color-text);
-  line-height: 18px;
+  line-height: 20px;
 }
 .song-related {
+  display: flex;
+  flex-direction: column;
   padding: 10px 0 30px;
   font-size: 0;
   color: var(--color-text);
 
   span {
     display: inline-block;
+
     padding-right: 30px;
     font-size: 13px;
     font-weight: 400;
     line-height: 20px;
+    min-width: 200px;
+    height: 20px;
+    word-wrap: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   a,
@@ -517,6 +637,41 @@ const init = () => {
     cursor: not-allowed;
   }
 }
+
+.addlist {
+  display: flex;
+  flex-direction: column;
+  .addlist-item {
+    display: flex;
+    margin: 4px 0;
+    img {
+      width: 80px;
+      height: 80px;
+      margin: 10px;
+    }
+    .info {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      span {
+        line-height: 16px;
+      }
+      span:first-child {
+        width: 190px;
+        word-wrap: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      span:nth-child(2) {
+        color: var(--color-text);
+      }
+    }
+  }
+}
+.el-checkbox.el-checkbox--large {
+  height: 100px;
+}
+
 .simi-song {
   padding: 20px;
   height: 270px;

@@ -30,15 +30,15 @@ function formatSongInfo(params) {
   return new Song({
     id: String(params.id),
     name: params.name,
-    mvId: params.mv,
-    singer: params.ar,
-    album: params.al,
+    mvId: params.mv || params.mvid,
+    singer: params.ar || params.artists,
+    album: params.al || params.album,
     alia: params.alia,
     vip: params.fee === 1,
     license: params.license,
-    duration: formatSongTime(params.dt),
+    duration: formatSongTime(params.dt || params.duration),
     url: `https://music.163.com/song/media/outer/url?id=${params.id}.mp3`,
-    publishTime: formatMsgTime(params.publishTime),
+    publishTime: params.publishTime ? formatMsgTime(params.publishTime) : 0,
   })
 }
 // 处理歌曲

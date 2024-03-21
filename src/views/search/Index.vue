@@ -104,7 +104,6 @@ import PlayList from '@/components/playlist/PlayList.vue'
 import MvList from '@/components/mv/MvList.vue'
 import Empty from '@/components/Empty.vue'
 import SearchArtist from './artist.vue'
-import { formatSongInfo } from '@/utils/song.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -190,7 +189,7 @@ const getSerachMatch = async () => {
 
   if (info.type === '1') {
     info.list = res.result?.songs.map((item) => {
-      return formatSongInfo(item)
+      return proxy.$utils.formatSongInfo(item)
     })
     info.total = res.result.songCount || 0
   } else if (info.type === '10') {
