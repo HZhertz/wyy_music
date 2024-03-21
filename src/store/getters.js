@@ -20,4 +20,10 @@ export default {
   isShowPlayListTips(state) {
     return state.isShowPlayListTips
   },
+  currentTime(state) {
+    return state.currentTime || JSON.parse(window.localStorage.getItem('currentTime')) || 0
+  },
+  volume(state) {
+    return state.volume || JSON.parse(window.localStorage.getItem('volume')) || 0.5
+  },
 }

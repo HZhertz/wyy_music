@@ -12,3 +12,5 @@ export const SET_PLAYLIST = 'SET_PLAYLIST'
 export const SET_PLAYINDEX = 'SET_PLAYINDEX'
 // 添加歌曲到播放列表时的tips
 export const SET_PLAYLISTTIPS = 'SET_PLAYLISTTIPS'
+export const SET_CURRENTTIME = 'SET_CURRENTTIME'
+export const SET_VOLUME = 'SET_VOLUME'

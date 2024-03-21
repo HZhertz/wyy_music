@@ -5,5 +5,7 @@ export default {
   playList: [], // 播放列表
   isPlayed: false, // 当前播放状态
   playIndex: 0, // 当前播放歌曲在播放列表的所在位置
-  isShowPlayListTips: false // 添加及播放成功后，播放列表按钮提示的文字
+  isShowPlayListTips: false, // 添加及播放成功后，播放列表按钮提示的文字
+  currentTime: 0,
+  volume: 0.5,
 }

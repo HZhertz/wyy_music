@@ -24,4 +24,12 @@ export default {
     state.playIndex = val
     window.localStorage.setItem('playIndex', val)
   },
+  [types.SET_CURRENTTIME](state, val = 0) {
+    state.currentTime = val
+    window.localStorage.setItem('currentTime', val)
+  },
+  [types.SET_VOLUME](state, val = 0) {
+    state.volume = val
+    window.localStorage.setItem('volume', val)
+  },
 }

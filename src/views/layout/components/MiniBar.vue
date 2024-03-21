@@ -33,11 +33,11 @@
           }}</span>
         </div>
         <div class="audioProgress">
-          <progress-line
+          <ProgressLine
             :progressWidth="audioProgressWidth"
             :isShowBtn="false"
             @setProgressLine="setAudioProgress"
-          ></progress-line>
+          ></ProgressLine>
         </div>
         <div class="play-footer">
           <div class="play-control">
@@ -57,106 +57,82 @@
   </div>
 </template>
 
-<script>
-import ProgressLine from './ProgressLine.vue'
-
+<script setup>
 import { computed, getCurrentInstance, inject, reactive, toRefs } from 'vue'
 import { useStore } from 'vuex'
-export default {
-  name: 'MiniBar',
-  setup(props, { emit }) {
-    const store = useStore()
-    const { proxy } = getCurrentInstance()
-    const info = reactive({
-      currentTime: inject('currentTime'), // 音频当前时长
-      playMode: 0, // 播放模式  0循环播放、1单曲循环、2随机播放
-      isMini: false, //
-    })
+import ProgressLine from './ProgressLine.vue'
 
-    // 获取播放列表
-    const playIndex = computed(() => store.getters.playIndex)
-    const playList = computed(() => store.getters.playList)
-    const isPlayed = computed(() => store.getters.isPlayed)
+const { proxy } = getCurrentInstance()
+const store = useStore()
+const emit = defineEmits(['changeMini', 'setAudioProgress', 'audioHandler', 'playAudioMode'])
+const info = reactive({
+  currentTime: inject('currentTime'), // 音频当前时长
+  playMode: 0, // 播放模式  0循环播放、1单曲循环、2随机播放
+  isMini: false, //
+})
+const { currentTime, playMode, isMini } = toRefs(info)
 
-    // 获取当前播放歌曲信息
-    const curSongInfo = computed(() => playList.value[playIndex.value])
+// 获取播放列表
+const playIndex = computed(() => store.getters.playIndex)
+const playList = computed(() => store.getters.playList)
+const isPlayed = computed(() => store.getters.isPlayed)
+// 获取当前播放歌曲信息
+const curSongInfo = computed(() => playList.value[playIndex.value])
 
-    // 音频播放/暂停/上一首/下一首事件
-    const audioHandler = (type) => {
-      emit('audioHandler', type)
-    }
+const changeWrapper = () => {
+  info.isMini = !info.isMini
+}
+const changeBar = () => {
+  emit('changeMini', 'Bar')
+}
 
-    // 切换播放模式
-    const changePlayMode = () => {
-      info['playMode'] = info['playMode'] >= 2 ? 0 : info['playMode'] + 1
+// 音频播放进度条
+const audioProgressWidth = computed(() => {
+  // 音频进度条长度
+  return (info.currentTime / proxy.$utils.formatSongSecond(curSongInfo.value.duration)) * 100 + '%'
+})
+// 点击拖拽进度条，设置当前时间
+const setAudioProgress = (params) => {
+  info.currentTime = params.val * proxy.$utils.formatSongSecond(curSongInfo.value.duration)
 
-      emit('playAudioMode', info['playMode'])
-    }
+  // 拖拽的时候，不实时更改音频的时间
+  if (params.flag) {
+    emit('setAudioProgress', info.currentTime)
+  }
+}
 
-    // 音频播放进度条
-    const audioProgressWidth = computed(() => {
-      // 音频进度条长度
-      return (info['currentTime'] / proxy.$utils.formatSongSecond(curSongInfo.value.duration)) * 100 + '%'
-    })
-    // 点击拖拽进度条，设置当前时间
-    const setAudioProgress = (params) => {
-      info['currentTime'] = params.val * proxy.$utils.formatSongSecond(curSongInfo.value.duration)
+// 播放暂停按钮
+const playIcon = computed(() => {
+  return !isPlayed.value ? 'icon-audio-play' : 'icon-audio-pause'
+})
+// 音频播放/暂停/上一首/下一首事件
+const audioHandler = (type) => {
+  emit('audioHandler', type)
+}
 
-      // 拖拽的时候，不实时更改音频的时间
-      if (params.flag) {
-        emit('setAudioProgress', info['currentTime'])
-      }
-    }
+// 播放模式
+const modeIcon = computed(() => {
+  const params = [
+    {
+      className: 'icon-loop',
+      title: '循环模式',
+    },
+    {
+      className: 'icon-single-cycle',
+      title: '单曲循环',
+    },
+    {
+      className: 'icon-shuffle',
+      title: '随机播放',
+    },
+  ]
+  return params[info.playMode]
+})
+// 切换播放模式
+const changePlayMode = () => {
+  info.playMode = info.playMode >= 2 ? 0 : info.playMode + 1
 
-    // 播放暂停按钮
-    const playIcon = computed(() => {
-      return !isPlayed.value ? 'icon-audio-play' : 'icon-audio-pause'
-    })
-
-    // 播放模式
-    const modeIcon = computed(() => {
-      const params = [
-        {
-          className: 'icon-loop',
-          title: '循环模式',
-        },
-        {
-          className: 'icon-single-cycle',
-          title: '单曲循环',
-        },
-        {
-          className: 'icon-shuffle',
-          title: '随机播放',
-        },
-      ]
-      return params[info.playMode]
-    })
-
-    const changeWrapper = () => {
-      info['isMini'] = !info['isMini']
-    }
-
-    const changeBar = () => {
-      emit('changeMini', 'Bar')
-    }
-
-    return {
-      ...toRefs(info),
-      isPlayed,
-      modeIcon,
-      audioHandler,
-      changePlayMode,
-      audioProgressWidth,
-      setAudioProgress,
-      curSongInfo,
-      changeBar,
-      playIcon,
-      changeWrapper,
-    }
-  },
-  components: {
-    ProgressLine,
-  },
+  emit('playAudioMode', info.playMode)
 }
 </script>
 <style lang="less" scoped>

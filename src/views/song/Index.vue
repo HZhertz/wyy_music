@@ -86,7 +86,7 @@
         </div>
         <div class="song-lyric">
           <h5>歌词</h5>
-          <Lyrics :sId="sId" maxH="530" />
+          <Lyrics :sId="sId" maxH="530" :currentTime="currentTime" />
         </div>
       </div>
       <div class="song-comments" ref="cBox">
@@ -173,6 +173,13 @@ const isCurSong = computed(() => isPlayed.value && curSongInfo.value && curSongI
 const playFontIcon = computed(() => (isCurSong.value ? 'icon-audio-pause' : 'icon-audio-play'))
 // 若是无版权获取vip歌曲 播放按钮置灰
 const songDisable = computed(() => (info.songInfo.license || info.songInfo.vip ? 'disable' : ''))
+const currentTime = computed(() => {
+  console.log(info.sId, curSongInfo.value.id)
+  console.log('info.sId === curSongInfo.value.id:', info.sId === curSongInfo.value.id)
+  if (info.sId === curSongInfo.value.id) {
+    return store.getters.currentTime
+  }
+})
 
 // 获取歌曲详情
 const getSongDetail = async () => {

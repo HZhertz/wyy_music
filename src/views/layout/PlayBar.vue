@@ -25,47 +25,52 @@
 </template>
 
 <script setup>
+import { provide, ref, computed } from 'vue'
+import { useStore } from 'vuex'
 import Bar from './components/Bar.vue'
 import MiniBar from './components/MiniBar.vue'
 import AudioBox from './components/AudioBox.vue'
 
-import { provide, ref } from 'vue'
+const store = useStore()
 
 const audioRef = ref(null)
-const currentTime = ref(0)
+// const currentTime = ref(0)
 const barType = ref('Bar')
+const currentTime = computed({
+  get: () => store.getters.currentTime,
+  set: (newValue) => {
+    store.commit('SET_CURRENTTIME', newValue)
+  },
+})
 
 // 拖拽音频进度条
 const setAudioProgress = (t) => {
   audioRef.value.setAudioProgress(t)
 }
-
 // 歌曲播放操作； 播放、暂停、上一首、下一首
 const playSongStates = (state) => {
   audioRef.value.playAudioType(state)
-}
-
-// 歌曲播放类型：循环、单曲、随机
-const playAudioMode = (mode) => {
-  audioRef.value.playAudioMode(mode)
-}
-
-// 拖拽音量进度条
-const setvolumeProgress = (progress) => {
-  audioRef.value.setvolumeProgress(progress)
 }
 // 设置音量
 const setVolumeHandler = (state) => {
   audioRef.value.setVolumeHandler(state)
 }
+// 拖拽音量进度条
+const setvolumeProgress = (progress) => {
+  audioRef.value.setvolumeProgress(progress)
+}
+// 歌曲播放类型：循环、单曲、随机
+const playAudioMode = (mode) => {
+  audioRef.value.playAudioMode(mode)
+}
+const changeMini = (type) => {
+  barType.value = type
+}
 
 // 当前音频的播放时长
 const setCurrentTime = (t) => {
+  console.log('t:', t)
   currentTime.value = t
-}
-
-const changeMini = (type) => {
-  barType.value = type
 }
 
 // 下发当前音频时间戳

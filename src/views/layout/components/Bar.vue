@@ -140,6 +140,7 @@ const emit = defineEmits([
   'setVolumeHandler',
   'setvolumeProgress',
   'playAudioMode',
+  'changeMini',
 ])
 const info = reactive({
   isLock: false, // 歌词弹窗时，固定播放条
@@ -305,20 +306,6 @@ const clearSonglist = () => {
   store.commit('SET_PLAYINDEX', 0)
 }
 
-onMounted(() => {
-  leaveBar()
-  store.commit('SET_PLAYLIST', playList.value)
-})
-
-onBeforeUnmount(() => {
-  clearTimeout(info.timer)
-  clearTimeout(info.tipsTimer)
-})
-
-const changeMini = () => {
-  emit('changeMini', 'MiniBar')
-}
-
 // 画中画
 const canvas = document.createElement('canvas')
 canvas.width = 250
@@ -364,7 +351,6 @@ const showPictureInPictureWindow = async () => {
     await video.play()
     video.pause()
   }
-  console.log('>>>')
   await video.requestPictureInPicture()
 }
 
@@ -380,20 +366,12 @@ for (const [action, type] of actionHandlers) {
     audioHandler(type)
     if (action == 'previoustrack' || action == 'nexttrack') {
       changePipSong()
-      // navigator.mediaSession.playbackState = 'playing'
     }
-
-    console.log('action:', action)
-    if (action == 'play') {
-      navigator.mediaSession.playbackState = 'playing'
-      // video.play()
-      console.log('play', 'navigator.mediaSession.playbackState:', navigator.mediaSession.playbackState)
-    } else if (action == 'pause') {
-      navigator.mediaSession.playbackState = 'paused'
-      // video.pause()
-
-      console.log('paused', 'navigator.mediaSession.playbackState:', navigator.mediaSession.playbackState)
-    }
+    // if (action == 'play') {
+    //   navigator.mediaSession.playbackState = 'playing'
+    // } else if (action == 'pause') {
+    //   navigator.mediaSession.playbackState = 'paused'
+    // }
   })
 }
 
@@ -401,12 +379,26 @@ for (const [action, type] of actionHandlers) {
 video.addEventListener(
   'leavepictureinpicture',
   () => {
-    info['isPip'] = false
+    info.isPip = false
   },
   false
 )
 watch(curSongInfo, () => {
   changePipSong()
+})
+
+const changeMini = () => {
+  emit('changeMini', 'MiniBar')
+}
+
+onMounted(() => {
+  leaveBar()
+  store.commit('SET_PLAYLIST', playList.value)
+})
+
+onBeforeUnmount(() => {
+  clearTimeout(info.timer)
+  clearTimeout(info.tipsTimer)
 })
 </script>
 <style scoped lang="less">
