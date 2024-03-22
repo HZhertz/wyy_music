@@ -47,9 +47,11 @@
                   ><i :class="['iconfont', playFontIcon]"></i>
                   {{ songInfo.vip ? 'VIP尊享' : '立即播放' }}</span
                 >
-                <span class="play-btn play-collect" @click="showAddlist"
-                  ><i class="iconfont icon-collect"></i> 收藏</span
-                >
+
+                <span :class="['play-btn', 'play-collect', isSub ? 'active' : '']" @click="showAddlist">
+                  <i :class="['iconfont', 'icon-collect' + (isSub ? '-active' : '')]"></i>
+                  {{ isSub ? '已收藏' : '收藏' }}
+                </span>
                 <span class="play-btn play-comment" @click="jumpComment"
                   ><i class="iconfont icon-comment"></i> 评论</span
                 >
@@ -135,13 +137,18 @@
       </div>
     </div>
   </div>
-  <el-dialog v-model="addlistVisible" title="选择要添加的歌单" width="500" center>
+  <el-dialog v-model="addlistVisible" title="选择要添加的歌单" width="500" center @close="handleAddlistClose">
     <el-scrollbar height="400px">
       <div class="addlist">
         <el-checkbox-group v-model="songInPlaylist">
-          <el-checkbox size="large" v-for="item in crePlaylist" :label="item.id" :key="item.id">
+          <el-checkbox
+            size="large"
+            v-for="item in crePlaylist"
+            :value="item.id"
+            :key="item.id"
+            @change="handleCheckboxChange(item.id)"
+          >
             <template #default>
-              {{ songInPlaylist[item.id] }}
               <div class="addlist-item">
                 <img :src="item.coverImgUrl" alt="" />
                 <div class="info">
@@ -157,7 +164,7 @@
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="addlistVisible = false">取消</el-button>
-        <el-button @click="addlistVisible = false"> 确定 </el-button>
+        <el-button @click="handlesubSong"> 确定 </el-button>
       </div>
     </template>
   </el-dialog>
@@ -184,7 +191,10 @@ const info = reactive({
   commentType: 0, // 0: 歌曲 1: mv 2: 歌单 3: 专辑  4: 电台 5: 视频 6: 动态
   addlistVisible: false,
   crePlaylist: [],
+  isSub: false,
+  initialSongInPlaylist: [],
   songInPlaylist: [],
+  playlistCheckState: {},
 })
 const {
   songInfo,
@@ -196,6 +206,7 @@ const {
   commentType,
   addlistVisible,
   crePlaylist,
+  isSub,
   songInPlaylist,
 } = toRefs(info)
 const cBox = ref(null)
@@ -264,46 +275,94 @@ const playing = (params) => {
   }
 }
 
-const showAddlist = () => {
+const getIsSub = async () => {
+  const { data: res } = await proxy.$http.getUserPlaylist({ uid: uId.value })
+  info.crePlaylist = res.playlist.filter((item) => !item.subscribed)
+
+  const results = await Promise.all(
+    info.crePlaylist.map(async (item) => {
+      const { data: res } = await proxy.$http.playlistTrackAll({
+        id: item.id,
+        timestamp: new Date().valueOf(),
+      })
+      return res.songs.some((item) => item.id == info.sId)
+    })
+  )
+  info.isSub = results.some((result) => result === true)
+}
+const showAddlist = async () => {
   if (isLogin.value) {
-    console.log('getUserPlaylist>>>>>')
-    getUserPlaylist()
+    console.log('info.playlistCheckState:', info.playlistCheckState)
+    console.log('info.songInPlaylist:', info.songInPlaylist)
+    console.log('info.initialSongInPlaylist:', info.initialSongInPlaylist)
+
+    await getPlaylistState()
+    console.log('info.playlistCheckState:', info.playlistCheckState)
+    console.log('info.songInPlaylist:', info.songInPlaylist)
+    console.log('info.initialSongInPlaylist:', info.initialSongInPlaylist)
     info.addlistVisible = true
   } else {
     proxy.$msg.warning('请登录后进行相关操作')
   }
 }
 const uId = computed(() => store.getters.userInfo.userId)
-const getUserPlaylist = async () => {
+const getPlaylistState = async () => {
   const { data: res } = await proxy.$http.getUserPlaylist({ uid: uId.value })
   info.crePlaylist = res.playlist.filter((item) => !item.subscribed)
-  info.crePlaylist.map(async (item) => {
-    // info.songInPlaylist[item.id] = await isSongInPlaylist(item.id)
-    await isSongInPlaylist(item.id)
+  console.log('info.crePlaylist:', info.crePlaylist)
 
-    // result && !info.songInPlaylist.includes(result) && info.songInPlaylist.push(result)
-  })
-  console.log('info.songInPlaylist:', info.songInPlaylist)
+  await Promise.all(
+    info.crePlaylist.map(async (pItem) => {
+      const { data: res } = await proxy.$http.playlistTrackAll({
+        id: pItem.id,
+        timestamp: new Date().valueOf(),
+      })
+      console.log(res)
+      if (res.songs.some((sItem) => sItem.id == info.sId)) {
+        info.playlistCheckState[pItem.id] = true
+        info.songInPlaylist.push(pItem.id)
+        info.initialSongInPlaylist.push(pItem.id)
+      } else {
+        info.playlistCheckState[pItem.id] = false
+        info.songInPlaylist = info.songInPlaylist.filter((item) => item !== pItem.id)
+      }
+    })
+  )
 }
-const isSongInPlaylist = async (playlistId) => {
-  const { data: res } = await proxy.$http.playlistTrackAll({ id: playlistId })
 
-  console.log(res)
-  console.log('playlistId:', playlistId, 'info.sId:', info.sId)
-  console.log(res.songs.some((item) => item.id == info.sId))
-
-  if (res.songs.some((item) => item.id == info.sId)) {
-    info.songInPlaylist.push(playlistId)
-    // return playlistId
-  } else {
-    info.songInPlaylist = info.songInPlaylist.filter((item) => item !== playlistId)
+const handleCheckboxChange = (playlistId) => {
+  info.playlistCheckState[playlistId] = !info.playlistCheckState[playlistId]
+  console.log('info.playlistCheckState:', info.playlistCheckState)
+  console.log('info.songInPlaylist:', info.songInPlaylist)
+  console.log('info.initialSongInPlaylist:', info.initialSongInPlaylist)
+}
+const handlesubSong = async () => {
+  for (let pid in info.playlistCheckState) {
+    pid = parseInt(pid)
+    if (info.playlistCheckState[pid] && !info.initialSongInPlaylist.includes(pid)) {
+      console.log('++++')
+      await addOrDeleteSong('add', pid, info.sId, new Date().valueOf())
+    } else if (!info.playlistCheckState[pid] && info.initialSongInPlaylist.includes(pid)) {
+      console.log('---')
+      await addOrDeleteSong('del', pid, info.sId, new Date().valueOf())
+    }
   }
-  // return res.songs.some((item) => item.id == info.sId)
-  // return res.songs.some((item) => {
-  //   if (item.id == info.sId) {
-  //     return playlistId
-  //   }
-  // })
+  await getIsSub()
+  info.addlistVisible = false
+}
+const addOrDeleteSong = async (op, pid, tracks, timestamp) => {
+  const res = await proxy.$http.playlistTracks({ op, pid, tracks, timestamp })
+  console.log('>>>>>>>>>>>>>>')
+  console.log(res)
+}
+const handleAddlistClose = () => {
+  info.playlistCheckState = {}
+  info.initialSongInPlaylist = []
+  info.songInPlaylist = []
+  console.log('close')
+  console.log('info.playlistCheckState:', info.playlistCheckState)
+  console.log('info.songInPlaylist:', info.songInPlaylist)
+  console.log('info.initialSongInPlaylist:', info.initialSongInPlaylist)
 }
 
 // 获取相似音乐
@@ -350,6 +409,7 @@ const jumpComment = () => {
 
 onBeforeRouteUpdate((to) => {
   info.sId = to.query.id
+  info.addlistVisible = false
   init()
 })
 
@@ -363,6 +423,7 @@ const init = () => {
     getSongDetail()
     getSimiSong()
     getSimiPlayList()
+    getIsSub()
   }
 }
 </script>
@@ -635,6 +696,10 @@ const init = () => {
   .disable {
     background: #ccc;
     cursor: not-allowed;
+  }
+  .play-collect.active,
+  .play-collect.active i {
+    color: var(--color-text-height);
   }
 }
 

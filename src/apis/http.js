@@ -17,8 +17,8 @@ const getUserSubcount = () => {
   return api.get('/user/subcount', {})
 }
 // 获取用户歌单
-const getUserPlaylist = ({ uid = '' }) => {
-  return api.get(`/user/playlist?uid=${uid}`, {})
+const getUserPlaylist = ({ uid = '', timestamp = new Date().valueOf() }) => {
+  return api.get(`/user/playlist?uid=${uid}&timestamp=${timestamp}`, {})
 }
 
 /* ********* 搜索 ********* */
@@ -71,6 +71,14 @@ const listDetail = ({ id = '', s = 8 }) => {
 // 歌曲详情 多个id , 隔开
 const songDetail = ({ ids = '', timestamp = 0 }) => {
   return api.post(`/song/detail?timestamp=${timestamp}`, { ids: ids })
+}
+// 对歌单添加或删除歌曲
+// 调用此接口 , 可以添加歌曲到歌单或者从歌单删除某首歌曲 ( 需要登录 )
+// op: 从歌单增加单曲为 add, 删除为 del
+// pid: 歌单 id
+// tracks: 歌曲 id,可多个,用逗号隔开
+const playlistTracks = ({ op, pid, tracks, timestamp }) => {
+  return api.get(`/playlist/tracks?op=${op}&pid=${pid}&tracks=${tracks}&timestamp=${timestamp}`)
 }
 // 获取相似音乐
 const simiSong = ({ id = '' }) => {
@@ -169,8 +177,8 @@ const playlistdetail = ({ id = '', s = 8 }) => {
   return api.get(`/playlist/detail?id=${id}&s=${s}`, {})
 }
 // 获取歌单所有歌曲
-const playlistTrackAll = ({ id, limit, offset }) => {
-  return api.get(`/playlist/track/all?id=${id}&limit=${limit}&offset=${offset}`, {})
+const playlistTrackAll = ({ id, limit, offset, timestamp }) => {
+  return api.get(`/playlist/track/all?id=${id}&limit=${limit}&offset=${offset}&timestamp=${timestamp}`, {})
 }
 // 歌单收藏用户
 const playlistSubscribers = ({ id = '', limit = 20, offset = 0 }) => {
@@ -306,6 +314,7 @@ export {
   artistList,
   cloudsearch,
   songDetail,
+  playlistTracks,
   simiSong,
   simiPlayList,
   lyrics,

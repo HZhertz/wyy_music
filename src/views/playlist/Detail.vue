@@ -81,7 +81,7 @@
               歌曲列表 <em>{{ total + '首歌' }}</em>
             </h4>
             <span class="play-all" @click="playAllSongs">
-							<i class="iconfont icon-audio-play"></i> 播放全部
+              <i class="iconfont icon-audio-play"></i> 播放全部
             </span>
             <span :class="['collect', details.subscribed ? 'active' : '']" @click="subPlayList(details)">
               <i :class="['iconfont', 'icon-collect' + (details.subscribed ? '-active' : '')]"></i>
@@ -203,7 +203,7 @@ const getDetail = async (params) => {
   info.details = res.playlist
   info.total = res.playlist.trackCount
 
-  getAllSongs({ id: info.id, limit: info.size })
+  getAllSongs({ id: info.id, limit: info.size, timestamp: new Date().valueOf() })
 
   info.isLoading = false
 }
@@ -277,7 +277,7 @@ const subPlayList = async (item) => {
 const updateSongList = (page) => {
   console.log(page)
   const offset = (page - 1) * info.size
-  getAllSongs({ id: info.id, limit: info.size, offset: offset })
+  getAllSongs({ id: info.id, limit: info.size, offset: offset, timestamp: new Date().valueOf() })
 }
 
 onMounted(() => {

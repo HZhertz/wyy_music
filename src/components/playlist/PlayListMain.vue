@@ -160,7 +160,7 @@ const getPlaylistDetail = async (params) => {
   info.subscribers = res.playlist.subscribers
   info.songListTotal = res.playlist.trackCount
 
-  getAllSongs({ id: props.playlistId, limit: info.songListSize })
+  getAllSongs({ id: props.playlistId, limit: info.songListSize, timestamp: new Date().valueOf() })
 
   info.songListLoading = false
 }
@@ -196,7 +196,7 @@ const subPlayList = async (item) => {
 const updateSongList = (page) => {
   console.log(page)
   const offset = (page - 1) * info.size
-  getAllSongs({ id: info.pId, limit: info.size, offset: offset })
+  getAllSongs({ id: info.pId, limit: info.size, offset: offset, timestamp: new Date().valueOf() })
 }
 
 watchEffect(() => {
@@ -363,7 +363,7 @@ watchEffect(() => {
   }
 }
 .song-main {
-	position: relative;
+  position: relative;
   padding: 0 20px;
   margin-top: 25px;
   background: #fff;

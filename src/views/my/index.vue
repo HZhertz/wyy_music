@@ -91,7 +91,7 @@ const getUserPlaylist = async () => {
 onMounted(async () => {
   await getUserPlaylist()
   !route.query.playlistId &&
-    (await router.push({ path: 'my', query: { playlistId: info.firstNonEmptyPlaylistId } }))
+    (await router.replace({ path: 'my', query: { playlistId: info.firstNonEmptyPlaylistId } }))
   info.pId = route.query.playlistId
 })
 
