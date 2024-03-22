@@ -242,7 +242,6 @@ const getSongDetail = async () => {
   if (res.code !== 200) {
     return proxy.$msg.error('数据请求失败')
   }
-  console.log('getSongDetailRes:', res)
 
   // 是否有版权播放
   // res.songs[0].license = !res.privileges[0].cp
@@ -253,8 +252,6 @@ const getSongDetail = async () => {
 
 // 播放音乐
 const playing = (params) => {
-  console.log('curSongInfo.value:', curSongInfo.value)
-  console.log('params:', params)
   // 若当前无播放歌曲 或 当前播放歌曲不是本页显示的歌曲  立即播放选中歌曲
   if (!curSongInfo.value || curSongInfo.value.id !== params.id) {
     // 无版权及vip不可播放
@@ -292,14 +289,8 @@ const getIsSub = async () => {
 }
 const showAddlist = async () => {
   if (isLogin.value) {
-    console.log('info.playlistCheckState:', info.playlistCheckState)
-    console.log('info.songInPlaylist:', info.songInPlaylist)
-    console.log('info.initialSongInPlaylist:', info.initialSongInPlaylist)
-
     await getPlaylistState()
-    console.log('info.playlistCheckState:', info.playlistCheckState)
-    console.log('info.songInPlaylist:', info.songInPlaylist)
-    console.log('info.initialSongInPlaylist:', info.initialSongInPlaylist)
+
     info.addlistVisible = true
   } else {
     proxy.$msg.warning('请登录后进行相关操作')
@@ -309,7 +300,6 @@ const uId = computed(() => store.getters.userInfo.userId)
 const getPlaylistState = async () => {
   const { data: res } = await proxy.$http.getUserPlaylist({ uid: uId.value })
   info.crePlaylist = res.playlist.filter((item) => !item.subscribed)
-  console.log('info.crePlaylist:', info.crePlaylist)
 
   await Promise.all(
     info.crePlaylist.map(async (pItem) => {
@@ -317,7 +307,7 @@ const getPlaylistState = async () => {
         id: pItem.id,
         timestamp: new Date().valueOf(),
       })
-      console.log(res)
+
       if (res.songs.some((sItem) => sItem.id == info.sId)) {
         info.playlistCheckState[pItem.id] = true
         info.songInPlaylist.push(pItem.id)
@@ -332,18 +322,13 @@ const getPlaylistState = async () => {
 
 const handleCheckboxChange = (playlistId) => {
   info.playlistCheckState[playlistId] = !info.playlistCheckState[playlistId]
-  console.log('info.playlistCheckState:', info.playlistCheckState)
-  console.log('info.songInPlaylist:', info.songInPlaylist)
-  console.log('info.initialSongInPlaylist:', info.initialSongInPlaylist)
 }
 const handlesubSong = async () => {
   for (let pid in info.playlistCheckState) {
     pid = parseInt(pid)
     if (info.playlistCheckState[pid] && !info.initialSongInPlaylist.includes(pid)) {
-      console.log('++++')
       await addOrDeleteSong('add', pid, info.sId, new Date().valueOf())
     } else if (!info.playlistCheckState[pid] && info.initialSongInPlaylist.includes(pid)) {
-      console.log('---')
       await addOrDeleteSong('del', pid, info.sId, new Date().valueOf())
     }
   }
@@ -352,23 +337,17 @@ const handlesubSong = async () => {
 }
 const addOrDeleteSong = async (op, pid, tracks, timestamp) => {
   const res = await proxy.$http.playlistTracks({ op, pid, tracks, timestamp })
-  console.log('>>>>>>>>>>>>>>')
-  console.log(res)
 }
 const handleAddlistClose = () => {
   info.playlistCheckState = {}
   info.initialSongInPlaylist = []
   info.songInPlaylist = []
-  console.log('close')
-  console.log('info.playlistCheckState:', info.playlistCheckState)
-  console.log('info.songInPlaylist:', info.songInPlaylist)
-  console.log('info.initialSongInPlaylist:', info.initialSongInPlaylist)
 }
 
 // 获取相似音乐
 const getSimiSong = async () => {
   const { data: res } = await proxy.$http.simiSong({ id: info.sId })
-  console.log('res:', res)
+
   if (res.code !== 200) {
     return proxy.$msg.error('数据请求失败')
   }
@@ -376,7 +355,6 @@ const getSimiSong = async () => {
     const [result] = proxy.$utils.formatSongs([item], [item.privilege])
     return result
   })
-  console.log('info.simiSong:', info.simiSong)
 }
 const playSimiIcon = computed(() => {
   return function (item) {

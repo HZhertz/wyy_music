@@ -153,9 +153,10 @@ const getArtistDetail = async () => {
   if (detailRes.code !== 200 || followCountRes.code !== 200) {
     return proxy.$msg.error('数据请求失败')
   }
+  console.log('detailRes.data:', detailRes.data)
   info.artistName = detailRes.data.artist.name
   info.artistAvatar = detailRes.data.artist.avatar
-  info.artistTags = detailRes.data.identify.imageDesc
+  info.artistTags = detailRes.data.identify?.imageDesc
   info.songTotal = detailRes.data.artist.musicSize
   info.albumTotal = detailRes.data.artist.albumSize
   info.mvTotal = detailRes.data.artist.mvSize
